@@ -3,9 +3,10 @@
 declare(strict_types=1);
 
 /**
- * Eenvoudige, privacyvriendelijke bezoekersstatistieken in SQLite.
- * Geen cookies voor bezoekers en geen IP-adressen: unieke bezoekers worden per dag geteld
- * met een hash waarvan het zout elke dag wisselt en daarna wordt weggegooid.
+ * Eenvoudige, privacyvriendelijke bezoekersstatistieken in SQLite, plus rate limiting.
+ * Geen cookies voor bezoekers en geen volledige IP-adressen: bezoekers worden per dag geteld met
+ * een pseudonieme code (hash van ingekort IP-adres en browser) waarvan het zout elke dag wisselt
+ * en daarna wordt gewist.
  */
 
 const ANALYTICS_DB = __DIR__ . '/../data/analytics.sqlite';
@@ -26,6 +27,8 @@ function analytics_db(): PDO
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
         ]);
         $pdo->exec('PRAGMA busy_timeout = 2000');
+        // Verwijderde gegevens (zoals oude zouten) echt overschrijven in plaats van alleen vrijgeven.
+        $pdo->exec('PRAGMA secure_delete = ON');
         $pdo->exec('CREATE TABLE IF NOT EXISTS pageviews (
             id         INTEGER PRIMARY KEY,
             created_at INTEGER NOT NULL,
@@ -44,6 +47,12 @@ function analytics_db(): PDO
             name       TEXT    NOT NULL
         )');
         $pdo->exec('CREATE TABLE IF NOT EXISTS salts (day TEXT PRIMARY KEY, salt TEXT NOT NULL)');
+        $pdo->exec('CREATE TABLE IF NOT EXISTS rate_limits (
+            id         INTEGER PRIMARY KEY,
+            action     TEXT    NOT NULL,
+            client     TEXT    NOT NULL,
+            created_at INTEGER NOT NULL
+        )');
     }
 
     return $pdo;
@@ -127,7 +136,8 @@ function analytics_referrer(): ?string
 function analytics_device(string $userAgent): string
 {
     return match (true) {
-        (bool) preg_match('/iPad|Tablet/i', $userAgent)  => 'Tablet',
+        (bool) preg_match('/iPad|Tablet/i', $userAgent),
+        str_contains($userAgent, 'Android') && !str_contains($userAgent, 'Mobi') => 'Tablet',
         (bool) preg_match('/Mobi|Android/i', $userAgent) => 'Mobiel',
         default                                          => 'Desktop',
     };
@@ -145,22 +155,92 @@ function analytics_browser(string $userAgent): string
     };
 }
 
-/** Anonieme bezoekerscode die alleen binnen één dag gelijk blijft. */
+/** Pseudonieme bezoekerscode die alleen binnen één dag gelijk blijft. */
 function analytics_visitor(string $day, string $userAgent): string
 {
-    $db = analytics_db();
-    $insert = $db->prepare('INSERT OR IGNORE INTO salts (day, salt) VALUES (?, ?)');
-    $insert->execute([$day, bin2hex(random_bytes(16))]);
+    return substr(hash('sha256', analytics_salt($day) . analytics_network() . $userAgent), 0, 16);
+}
 
-    // Nieuwe dag: het zout van gisteren weggooien, zodat bezoeken niet over dagen te koppelen zijn.
-    if ($insert->rowCount() > 0) {
-        $db->prepare('DELETE FROM salts WHERE day < ?')->execute([$day]);
+/**
+ * Alleen het netwerkdeel van het IP-adres (/24 bij IPv4, /48 bij IPv6). Het volledige adres wordt
+ * nooit gebruikt of opgeslagen, zodat een code niet naar één specifiek IP-adres te herleiden is.
+ */
+function analytics_network(): string
+{
+    $packed = @inet_pton($_SERVER['REMOTE_ADDR'] ?? '');
+
+    if ($packed === false) {
+        return '';
     }
 
+    return bin2hex(substr($packed, 0, strlen($packed) === 4 ? 3 : 6));
+}
+
+function analytics_salt(string $day): string
+{
+    $db = analytics_db();
     $select = $db->prepare('SELECT salt FROM salts WHERE day = ?');
     $select->execute([$day]);
+    $salt = $select->fetchColumn();
 
-    return substr(hash('sha256', $select->fetchColumn() . ($_SERVER['REMOTE_ADDR'] ?? '') . $userAgent), 0, 16);
+    if ($salt !== false) {
+        return (string) $salt;
+    }
+
+    // Nieuwe dag: nieuw zout, en dat van eerdere dagen weggooien zodat bezoeken niet over dagen te koppelen zijn.
+    $db->prepare('INSERT OR IGNORE INTO salts (day, salt) VALUES (?, ?)')->execute([$day, bin2hex(random_bytes(16))]);
+    $db->prepare('DELETE FROM salts WHERE day < ?')->execute([$day]);
+    $select->execute([$day]);
+
+    return (string) $select->fetchColumn();
+}
+
+/**
+ * Registreert een poging en zegt of die binnen de limieten valt.
+ *
+ * $action heeft de vorm "groep:naam", bijvoorbeeld "mail:form". De limiet per bezoeker geldt per actie,
+ * de daglimiet voor de hele groep: zo delen het formulier en de MCP-server één dagbudget voor mail.
+ * Bij een databasefout wordt de actie geweigerd: liever geen mail dan een volle inbox.
+ */
+function rate_limit_allows(string $action, int $perClientPerHour, int $totalPerDay): bool
+{
+    $db = null;
+
+    try {
+        $db = analytics_db();
+        $now = time();
+        $client = substr(hash('sha256', analytics_salt(date('Y-m-d')) . analytics_network()), 0, 16);
+        $group = strtok($action, ':') . ':%';
+
+        // Tellen en registreren in één transactie, zodat gelijktijdige verzoeken de limiet niet omzeilen.
+        $db->exec('BEGIN IMMEDIATE');
+        $db->prepare('DELETE FROM rate_limits WHERE created_at < ?')->execute([$now - 86400]);
+
+        $perClient = $db->prepare('SELECT COUNT(*) FROM rate_limits WHERE action = ? AND client = ? AND created_at >= ?');
+        $perClient->execute([$action, $client, $now - 3600]);
+
+        $total = $db->prepare('SELECT COUNT(*) FROM rate_limits WHERE action LIKE ? AND created_at >= ?');
+        $total->execute([$group, $now - 86400]);
+
+        $allowed = (int) $perClient->fetchColumn() < $perClientPerHour && (int) $total->fetchColumn() < $totalPerDay;
+
+        if ($allowed) {
+            $db->prepare('INSERT INTO rate_limits (action, client, created_at) VALUES (?, ?, ?)')->execute([$action, $client, $now]);
+        }
+
+        $db->exec('COMMIT');
+
+        return $allowed;
+    } catch (Throwable $exception) {
+        try {
+            $db?->exec('ROLLBACK');
+        } catch (Throwable) {
+        }
+
+        error_log('rate_limit_allows: ' . $exception->getMessage());
+
+        return false;
+    }
 }
 
 function analytics_cleanup(): void
@@ -169,4 +249,5 @@ function analytics_cleanup(): void
     $cutoff = date('Y-m-d', strtotime('-' . ANALYTICS_RETENTION_DAYS . ' days'));
     $db->prepare('DELETE FROM pageviews WHERE day < ?')->execute([$cutoff]);
     $db->prepare('DELETE FROM events WHERE day < ?')->execute([$cutoff]);
+    $db->prepare('DELETE FROM rate_limits WHERE created_at < ?')->execute([time() - 86400]);
 }

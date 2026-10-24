@@ -17,7 +17,7 @@ return [
         'specialisms'      => ['AI-integraties', 'Industriële procesoptimalisatie', 'Maatwerksoftware', 'MCP-koppelingen (Model Context Protocol)', 'Agentic workflows: snel prototypen en snel in productie', 'AI-sparring, training en begeleiding'],
         'summary'          => 'Ik help MKB-bedrijven in de maakindustrie om AI in te zetten waar het écht iets oplevert: in hun processen, machines en systemen. Met agentic workflows staan prototypes én productieklare oplossingen razendsnel klaar, en ik help mensen en bedrijven ook om zelf met AI aan de slag te gaan.',
         'about'            => [
-            'Ik ben ' . SITE['owner'] . ', oprichter van ' . SITE['name'] . ' in ' . SITE['city'] . '. Al bijna twintig jaar ontwikkel ik software, de laatste jaren met de focus op AI.',
+            'Ik ben ' . SITE['owner'] . ', oprichter van ' . SITE['name'] . ' in ' . SITE['city'] . '. Al bijna 20 jaar ontwikkel ik software, de laatste jaren met de focus op AI.',
             'Mijn kracht zit in de combinatie: technische diepgang en ervaring met industriële procesoptimalisatie. Ik weet hoe een productieproces loopt, waar het schuurt en hoe je software bouwt die mensen op de vloer ook echt gebruiken. Dat zie je terug in FLEX, het platform dat ik voor de industrie heb ontwikkeld.',
             'Zelf bouw ik met agentic workflows: AI-agents die zelfstandig meeprogrammeren, testen en itereren. Daardoor staat een prototype veel sneller klaar, en gaat de doorontwikkeling naar een stabiele productieversie net zo vlot. De time-to-market is een fractie van wat het was.',
             'AI ontwikkelt zich razendsnel. Ik vertaal die ontwikkelingen naar wat het voor jouw bedrijf betekent: nuchter, concreet en met oog voor wat het oplevert. En ik help mensen en bedrijven ook graag om zelf met AI aan de slag te gaan.',
@@ -52,7 +52,7 @@ return [
         ],
         [
             'title' => 'Zelf aan de slag met AI',
-            'text'  => 'Ik help mensen en bedrijven om zelf met AI te werken. Samen sparren over wat AI voor jou kan betekenen, leren hoe je AI als sparringpartner inzet, praktische workshops en begeleiding bij je eerste eigen AI-toepassingen en agentic workflows.',
+            'text'  => 'Ik help mensen en bedrijven om zelf met AI te werken. Samen sparren over wat AI voor jou kan betekenen, leren hoe je AI slim inzet in je dagelijkse werk, praktische workshops en begeleiding bij je eerste eigen AI-toepassingen en agentic workflows.',
             'icon'  => '<path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11v5c0 1.5 2.7 3 6 3s6-1.5 6-3v-5"/><path d="M22 9v5"/>',
         ],
     ],

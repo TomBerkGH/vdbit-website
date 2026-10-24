@@ -28,15 +28,21 @@ $canonical = SITE['url'] . ($isHome ? '/' : (parse_url($_SERVER['REQUEST_URI'] ?
     <meta property="og:title" content="<?= e($pageTitle) ?>">
     <meta property="og:description" content="<?= e($pageDescription) ?>">
     <meta property="og:url" content="<?= e($canonical) ?>">
-    <meta property="og:image" content="<?= e(SITE['url']) ?>/assets/img/logo-vdb-it.webp">
+    <meta property="og:site_name" content="<?= e(SITE['name']) ?>">
+    <meta property="og:image" content="<?= e(SITE['url']) ?>/assets/img/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
 
     <link rel="icon" href="<?= asset('assets/img/favicon.svg') ?>" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png">
     <link rel="preload" href="/assets/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="<?= asset('assets/css/style.css') ?>">
 
     <script>
-        // Thema zetten vóór het tekenen, zodat de pagina niet knippert.
+        // Thema en "js"-class zetten vóór het tekenen, zodat de pagina niet knippert.
         (function () {
+            document.documentElement.classList.add('js');
             var theme = null;
             try { theme = localStorage.getItem('theme'); } catch (e) {}
             if (theme !== 'light' && theme !== 'dark') {
@@ -70,7 +76,7 @@ $canonical = SITE['url'] . ($isHome ? '/' : (parse_url($_SERVER['REQUEST_URI'] ?
             <a class="icon-btn icon-btn-github" href="<?= e(SITE['github']) ?>" target="_blank" rel="noopener" aria-label="Broncode van deze website op GitHub" title="Broncode op GitHub">
                 <?= github_icon() ?>
             </a>
-            <button class="icon-btn theme-toggle" type="button" aria-label="Wissel tussen licht en donker thema">
+            <button class="icon-btn theme-toggle" type="button" aria-label="Donker thema" aria-pressed="false">
                 <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.5"/><path d="M12 1.5v3M12 19.5v3M1.5 12h3M19.5 12h3M4.6 4.6l2.1 2.1M17.3 17.3l2.1 2.1M4.6 19.4l2.1-2.1M17.3 6.7l2.1-2.1"/></svg>
                 <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 14.5A8.5 8.5 0 0 1 9.5 3.5a8.5 8.5 0 1 0 11 11z"/></svg>
             </button>

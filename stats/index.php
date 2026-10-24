@@ -4,24 +4,41 @@ declare(strict_types=1);
 
 require __DIR__ . '/../includes/config.php';
 
-session_start([
-    'cookie_httponly' => true,
-    'cookie_samesite' => 'Strict',
-    'cookie_secure'   => !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off',
-]);
+const STATS_LOGIN_PER_CLIENT_PER_HOUR = 5;
+const STATS_LOGIN_TOTAL_PER_DAY = 30;
+
+$secure = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off';
+
+// Alleen een sessie (en dus een cookie) bij inloggen of als je al ingelogd bent; gewone bezoekers krijgen niets.
+if ($_SERVER['REQUEST_METHOD'] === 'POST' || isset($_COOKIE[session_name()])) {
+    session_start([
+        'cookie_path'     => '/stats/',
+        'cookie_httponly' => true,
+        'cookie_samesite' => 'Strict',
+        'cookie_secure'   => $secure,
+    ]);
+}
 
 $passwordHash = stats_password_hash();
-$loginError = false;
+$loginError = null;
 
 if (isset($_GET['uitloggen'])) {
-    $_SESSION = [];
-    session_destroy();
+    if (session_status() === PHP_SESSION_ACTIVE) {
+        $_SESSION = [];
+        session_destroy();
+        setcookie(session_name(), '', ['expires' => 1, 'path' => '/stats/', 'secure' => $secure, 'httponly' => true, 'samesite' => 'Strict']);
+    }
+
     header('Location: /stats/', true, 303);
     exit;
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if ($passwordHash !== '' && password_verify((string) ($_POST['wachtwoord'] ?? ''), $passwordHash)) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && $passwordHash !== '') {
+    $password = $_POST['wachtwoord'] ?? '';
+
+    if (!rate_limit_allows('login:stats', STATS_LOGIN_PER_CLIENT_PER_HOUR, STATS_LOGIN_TOTAL_PER_DAY)) {
+        $loginError = 'Te veel inlogpogingen. Probeer het over een uur opnieuw.';
+    } elseif (is_string($password) && password_verify($password, $passwordHash)) {
         session_regenerate_id(true);
         $_SESSION['stats'] = true;
 
@@ -31,25 +48,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'path'     => '/',
             'httponly' => true,
             'samesite' => 'Lax',
-            'secure'   => !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off',
+            'secure'   => $secure,
         ]);
 
         header('Location: /stats/', true, 303);
         exit;
+    } else {
+        $loginError = 'Onjuist wachtwoord.';
     }
-
-    sleep(1);
-    $loginError = true;
 }
 
 $loggedIn = ($_SESSION['stats'] ?? false) === true;
+$dbError = false;
 
 $periods = [7 => '7 dagen', 30 => '30 dagen', 90 => '90 dagen', 365 => '12 maanden'];
 $days = (int) ($_GET['periode'] ?? 30);
 $days = array_key_exists($days, $periods) ? $days : 30;
 
 if ($loggedIn) {
-    $db = analytics_db();
+    try {
+        $db = analytics_db();
+    } catch (Throwable $exception) {
+        error_log('stats: ' . $exception->getMessage());
+        $dbError = true;
+        $loggedIn = false;
+    }
+}
+
+if ($loggedIn) {
     $since = date('Y-m-d', strtotime('-' . ($days - 1) . ' days'));
 
     $scalar = static function (string $sql) use ($db, $since): int {
@@ -108,7 +134,10 @@ require __DIR__ . '/../includes/header.php';
     <div class="container">
         <span class="label">Statistieken</span>
 
-        <?php if (!$loggedIn): ?>
+        <?php if ($dbError): ?>
+            <h1>Statistieken niet beschikbaar</h1>
+            <p class="muted">De statistiekendatabase kon niet worden geopend. Controleer of PHP de extensie <code>pdo_sqlite</code> heeft en of de map <code>data/</code> schrijfbaar is.</p>
+        <?php elseif (!$loggedIn): ?>
             <h1>Inloggen</h1>
             <?php if ($passwordHash === ''): ?>
                 <p class="muted">
@@ -118,8 +147,8 @@ require __DIR__ . '/../includes/header.php';
                 </p>
             <?php else: ?>
                 <form class="card stats-login" method="post">
-                    <?php if ($loginError): ?>
-                        <p class="form-message form-error" role="alert">Onjuist wachtwoord.</p>
+                    <?php if ($loginError !== null): ?>
+                        <p class="form-message form-error" role="alert"><?= e($loginError) ?></p>
                     <?php endif ?>
                     <label>Wachtwoord<input type="password" name="wachtwoord" required autofocus autocomplete="current-password"></label>
                     <button class="btn" type="submit">Inloggen</button>
@@ -137,14 +166,14 @@ require __DIR__ . '/../includes/header.php';
             </div>
 
             <div class="stats-totals">
-                <div class="card"><span>Unieke bezoekers</span><strong><?= number_format($visitors, 0, ',', '.') ?></strong></div>
+                <div class="card"><span>Bezoekers <small>(per dag geteld)</small></span><strong><?= number_format($visitors, 0, ',', '.') ?></strong></div>
                 <div class="card"><span>Paginaweergaven</span><strong><?= number_format($pageviews, 0, ',', '.') ?></strong></div>
-                <div class="card"><span>Contactaanvragen</span><strong><?= number_format($contacts, 0, ',', '.') ?></strong></div>
+                <div class="card"><span>Berichten <small>(formulier + MCP)</small></span><strong><?= number_format($contacts, 0, ',', '.') ?></strong></div>
             </div>
 
             <div class="card stats-chart-card">
-                <h2>Unieke bezoekers per dag</h2>
-                <div class="stats-chart" role="img" aria-label="Staafdiagram van unieke bezoekers per dag">
+                <h2>Bezoekers per dag</h2>
+                <div class="stats-chart" role="img" aria-label="Staafdiagram van het aantal bezoekers per dag">
                     <?php foreach ($perDay as $day => $count): ?>
                         <div class="stats-bar" style="--h: <?= round($count / $maxPerDay * 100, 1) ?>%" title="<?= e($formatDay($day)) ?>: <?= $count ?>"></div>
                     <?php endforeach ?>

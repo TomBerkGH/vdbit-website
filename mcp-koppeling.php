@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 require __DIR__ . '/includes/config.php';
+require __DIR__ . '/includes/mailer.php';
 require __DIR__ . '/includes/mcp-tools.php';
 
 $pageTitle = 'MCP-koppeling | VDB-IT';
@@ -17,7 +18,7 @@ $examples = [
     'Welke diensten biedt ' . SITE['name'] . ' aan voor een productiebedrijf?',
     'Geef een voorbeeld van een project met MCP in de industrie.',
     'Hoe verloopt een traject, van eerste gesprek tot werkend systeem?',
-    'Hoe kan ik contact opnemen voor een kennismaking?',
+    'Stuur ' . SITE['owner'] . ' een bericht dat ik interesse heb in een AI-workshop.',
 ];
 
 $curlExample = <<<BASH
@@ -40,8 +41,8 @@ require __DIR__ . '/includes/header.php';
             <h1>Praat met deze website <span class="gradient-text">via AI.</span></h1>
             <p class="lede">
                 Deze website heeft een eigen MCP-server. Koppel je AI-assistent eraan en stel zelf vragen over mijn
-                ervaring, diensten en projecten. Het is een kleine demo van wat ik bij klanten bouw: AI die rechtstreeks
-                met je eigen systemen en data werkt.
+                ervaring, diensten en projecten, of laat de AI direct een bericht naar me sturen. Het is een kleine demo
+                van wat ik bij klanten bouw: AI die rechtstreeks met je eigen systemen en data werkt.
             </p>
             <div class="code-block code-block-solid">
                 <span class="code-label">MCP-endpoint</span>
@@ -65,7 +66,7 @@ require __DIR__ . '/includes/header.php';
             </div>
             <ul class="mcp-facts">
                 <li><span>Toegang</span><strong>Openbaar, geen account nodig</strong></li>
-                <li><span>Rechten</span><strong>Alleen lezen</strong></li>
+                <li><span>Rechten</span><strong>Lezen en een bericht sturen</strong></li>
                 <li><span>Transport</span><strong>Streamable HTTP</strong></li>
                 <li><span>Tools</span><strong><?= count($tools) ?></strong></li>
             </ul>
@@ -87,7 +88,7 @@ require __DIR__ . '/includes/header.php';
                 <h3>Claude Code</h3>
                 <p>Eén commando in je terminal:</p>
                 <div class="code-block code-block-solid">
-                    <pre><code>claude mcp add --transport http vdb-it <?= e($mcpUrl) ?></code></pre>
+                    <pre tabindex="0" aria-label="Codevoorbeeld"><code>claude mcp add --transport http vdb-it <?= e($mcpUrl) ?></code></pre>
                 </div>
             </article>
 
@@ -95,7 +96,7 @@ require __DIR__ . '/includes/header.php';
                 <h3>VS Code <small>(GitHub Copilot)</small></h3>
                 <p>Zet dit in <code>.vscode/mcp.json</code>:</p>
                 <div class="code-block code-block-solid">
-                    <pre><code><?= e($vscodeConfig) ?></code></pre>
+                    <pre tabindex="0" aria-label="Codevoorbeeld"><code><?= e($vscodeConfig) ?></code></pre>
                 </div>
             </article>
 
@@ -103,11 +104,31 @@ require __DIR__ . '/includes/header.php';
                 <h3>Cursor</h3>
                 <p>Zet dit in <code>~/.cursor/mcp.json</code>:</p>
                 <div class="code-block code-block-solid">
-                    <pre><code><?= e($cursorConfig) ?></code></pre>
+                    <pre tabindex="0" aria-label="Codevoorbeeld"><code><?= e($cursorConfig) ?></code></pre>
                 </div>
             </article>
         </div>
         <p class="muted mcp-note">Andere AI-clients die MCP via HTTP ondersteunen, werken met dezelfde URL.</p>
+
+        <h2 class="mcp-heading">AI die ook iets dóét</h2>
+        <div class="mcp-explain mcp-explain-tight">
+            <div>
+                <p>
+                    De meeste tools lezen alleen gegevens. Met <code>send_contact_request</code> kan je AI-assistent ook een
+                    bericht naar mij sturen, bijvoorbeeld om een kennismaking aan te vragen. Je AI laat je eerst het bericht
+                    zien en vraagt om bevestiging; het bericht komt bij mij binnen net als via het contactformulier.
+                </p>
+                <p>
+                    Precies zo kan AI in jouw bedrijf een werkorder aanmaken, een storing melden of een order vrijgeven:
+                    altijd met duidelijke grenzen en met de mens die bevestigt.
+                </p>
+            </div>
+            <ul class="mcp-facts">
+                <li><span>Ontvanger</span><strong>Altijd alleen <?= e(SITE['name']) ?></strong></li>
+                <li><span>Bevestiging</span><strong>Door de gebruiker</strong></li>
+                <li><span>Limiet</span><strong><?= MAIL_MCP_PER_CLIENT_PER_HOUR ?> per uur, <?= MAIL_TOTAL_PER_DAY ?> per dag</strong></li>
+            </ul>
+        </div>
 
         <h2 class="mcp-heading">Probeer bijvoorbeeld</h2>
         <ul class="prompt-list">
@@ -117,7 +138,7 @@ require __DIR__ . '/includes/header.php';
         </ul>
 
         <h2 class="mcp-heading">Beschikbare tools</h2>
-        <div class="card tool-table-wrap">
+        <div class="card tool-table-wrap" tabindex="0" role="region" aria-label="Beschikbare tools">
             <table class="tool-table">
                 <thead>
                     <tr><th scope="col">Tool</th><th scope="col">Wat het oplevert</th></tr>
@@ -139,7 +160,7 @@ require __DIR__ . '/includes/header.php';
                 <p>
                     De server is één PHP-bestand zonder framework. Hij spreekt JSON-RPC 2.0 via Streamable HTTP, zonder
                     sessies: elke POST krijgt direct een JSON-antwoord. Ondersteunde protocolversies:
-                    <code>2025-11-25</code>, <code>2025-06-18</code> en <code>2025-03-26</code>.
+                    <code>2025-11-25</code>, <code>2025-06-18</code>, <code>2025-03-26</code> en <code>2024-11-05</code>.
                 </p>
                 <a class="btn-github btn-github-light" href="<?= e(SITE['github']) ?>/blob/main/mcp.php" target="_blank" rel="noopener">
                     <?= github_icon() ?>
@@ -149,7 +170,7 @@ require __DIR__ . '/includes/header.php';
             </div>
             <div class="code-block code-block-solid">
                 <span class="code-label">Zelf proberen met curl</span>
-                <pre><code><?= e($curlExample) ?></code></pre>
+                <pre tabindex="0" aria-label="Codevoorbeeld"><code><?= e($curlExample) ?></code></pre>
             </div>
         </div>
 

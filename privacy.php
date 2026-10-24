@@ -23,8 +23,9 @@ require __DIR__ . '/includes/header.php';
 
         <h2>Welke gegevens verwerk ik?</h2>
         <p>
-            Als je het contactformulier invult of mij mailt, ontvang ik de gegevens die je zelf opgeeft:
-            je naam, e-mailadres en bericht, en als je die invult ook je bedrijfsnaam en telefoonnummer.
+            Als je het contactformulier invult, mij mailt of via een AI-assistent een bericht stuurt met de
+            MCP-koppeling van deze site, ontvang ik de gegevens die je zelf opgeeft: je naam, e-mailadres en bericht,
+            en als je die invult ook je bedrijfsnaam en telefoonnummer.
         </p>
 
         <h2>Waarom?</h2>
@@ -47,11 +48,25 @@ require __DIR__ . '/includes/header.php';
             thema wordt alleen lokaal in je browser opgeslagen.
         </p>
         <p>
-            Om te zien hoe de site gebruikt wordt, houd ik op mijn eigen server eenvoudige, anonieme statistieken bij:
-            welke pagina bezocht wordt, van welke website je kwam, en welk type apparaat en browser je gebruikt.
-            Je IP-adres wordt niet opgeslagen. Om bezoekers per dag te kunnen tellen, wordt een anonieme code gebruikt die
-            elke dag verandert, zodat bezoeken niet over meerdere dagen aan elkaar te koppelen zijn. Deze statistieken
-            worden na ongeveer 13 maanden verwijderd en niet met anderen gedeeld.
+            Om te zien hoe de site gebruikt wordt, houd ik op mijn eigen server eenvoudige statistieken bij:
+            welke pagina bezocht wordt, van welke website je kwam (alleen de domeinnaam), en welk type apparaat en
+            browser je gebruikt. Je volledige IP-adres wordt daarbij niet opgeslagen. Om bezoekers per dag te kunnen
+            tellen, wordt een pseudonieme code gemaakt uit een ingekort IP-adres en je browsertype. Die code verandert
+            elke dag en de sleutel om hem te maken wordt dagelijks gewist, zodat bezoeken niet over meerdere dagen aan
+            elkaar te koppelen zijn. Deze statistieken worden na ongeveer 13 maanden verwijderd en niet met anderen gedeeld.
+        </p>
+        <p>
+            Om misbruik te voorkomen (zoals spam via het contactformulier of de MCP-koppeling) wordt op dezelfde
+            pseudonieme manier bijgehouden hoe vaak er vanaf een netwerk berichten worden verstuurd. Die gegevens worden
+            na 24 uur verwijderd.
+        </p>
+        <p>
+            Mijn hostingprovider houdt, zoals gebruikelijk, technische serverlogs bij (waaronder IP-adressen) voor de
+            beveiliging en het goed laten werken van de server. Daar heb ik zelf geen invloed op.
+        </p>
+        <p>
+            Alleen de beveiligde statistiekenpagina voor mijzelf gebruikt functionele cookies om ingelogd te blijven;
+            die worden bij gewone bezoekers niet geplaatst.
         </p>
 
         <h2>Je rechten</h2>

@@ -1,12 +1,17 @@
-document.documentElement.classList.add('js');
+// De class "js" op <html> wordt al in de <head> gezet (includes/header.php), vóór het tekenen.
 
 document.addEventListener('DOMContentLoaded', () => {
     const root = document.documentElement;
 
     // Licht/donker thema wisselen en de keuze onthouden.
-    document.querySelector('.theme-toggle')?.addEventListener('click', () => {
+    const themeToggle = document.querySelector('.theme-toggle');
+    const syncThemeToggle = () => themeToggle?.setAttribute('aria-pressed', String(root.dataset.theme === 'dark'));
+    syncThemeToggle();
+
+    themeToggle?.addEventListener('click', () => {
         const theme = root.dataset.theme === 'dark' ? 'light' : 'dark';
         root.dataset.theme = theme;
+        syncThemeToggle();
         try { localStorage.setItem('theme', theme); } catch (e) {}
     });
 
@@ -16,6 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
         try { saved = localStorage.getItem('theme'); } catch (e) {}
         if (!saved) {
             root.dataset.theme = event.matches ? 'dark' : 'light';
+            syncThemeToggle();
         }
     });
 
@@ -29,10 +35,18 @@ document.addEventListener('DOMContentLoaded', () => {
         navToggle.setAttribute('aria-label', open ? 'Menu sluiten' : 'Menu openen');
     };
 
-    navToggle?.addEventListener('click', () => setMenu(!nav.classList.contains('is-open')));
+    navToggle?.addEventListener('click', () => {
+        const open = !nav.classList.contains('is-open');
+        setMenu(open);
+        // Toetsenbordgebruikers komen direct bij de eerste link uit.
+        if (open) nav.querySelector('a')?.focus();
+    });
     nav?.querySelectorAll('a').forEach((link) => link.addEventListener('click', () => setMenu(false)));
     document.addEventListener('keydown', (event) => {
-        if (event.key === 'Escape') setMenu(false);
+        if (event.key === 'Escape' && nav?.classList.contains('is-open')) {
+            setMenu(false);
+            navToggle.focus();
+        }
     });
 
     // Rand onder de header zodra er gescrold wordt.
@@ -40,6 +54,33 @@ document.addEventListener('DOMContentLoaded', () => {
     const onScroll = () => header.classList.toggle('is-scrolled', window.scrollY > 8);
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
+
+    // Contactformulier: bij een fout het getypte bericht terugzetten, en de melding in beeld brengen.
+    const form = document.querySelector('.contact-form');
+    const status = new URLSearchParams(location.search).get('contact');
+    const draftKey = 'contact-draft';
+
+    if (form) {
+        form.addEventListener('submit', () => {
+            const draft = {};
+            form.querySelectorAll('input[name]:not([name="website"]), textarea[name]').forEach((field) => { draft[field.name] = field.value; });
+            try { sessionStorage.setItem(draftKey, JSON.stringify(draft)); } catch (e) {}
+        });
+
+        try {
+            if (status === 'ok') {
+                sessionStorage.removeItem(draftKey);
+            } else if (status) {
+                const draft = JSON.parse(sessionStorage.getItem(draftKey) || '{}');
+                Object.entries(draft).forEach(([name, value]) => {
+                    const field = form.elements.namedItem(name);
+                    if (field && 'value' in field) field.value = value;
+                });
+            }
+        } catch (e) {}
+
+        form.querySelector('.form-message')?.focus();
+    }
 
     // Elementen laten infaden zodra ze in beeld komen.
     const revealItems = document.querySelectorAll('.reveal');

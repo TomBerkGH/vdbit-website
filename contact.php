@@ -2,7 +2,11 @@
 
 declare(strict_types=1);
 
+// Waarschuwingen (bijv. van mail()) mogen de redirect-headers niet breken; ze gaan naar het errorlog.
+ini_set('display_errors', '0');
+
 require __DIR__ . '/includes/config.php';
+require __DIR__ . '/includes/mailer.php';
 
 function redirectToContact(string $status): never
 {
@@ -16,50 +20,27 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 // Spambot heeft het verborgen veld ingevuld: doe alsof het gelukt is.
-if (trim($_POST['website'] ?? '') !== '') {
+$honeypot = $_POST['website'] ?? '';
+if (!is_string($honeypot) || trim($honeypot) !== '') {
     redirectToContact('ok');
 }
 
-$field = static fn (string $name, int $max): string => mb_substr(trim((string) ($_POST[$name] ?? '')), 0, $max);
+$message = contact_message_from([
+    'name'    => $_POST['naam'] ?? '',
+    'company' => $_POST['bedrijf'] ?? '',
+    'email'   => $_POST['email'] ?? '',
+    'phone'   => $_POST['telefoon'] ?? '',
+    'message' => $_POST['bericht'] ?? '',
+]);
 
-$name    = $field('naam', 100);
-$company = $field('bedrijf', 100);
-$email   = $field('email', 150);
-$phone   = $field('telefoon', 30);
-$message = $field('bericht', 5000);
-
-$emailIsValid = filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
-
-if ($name === '' || $message === '' || !$emailIsValid) {
+if ($message === null) {
     redirectToContact('fout');
 }
 
-// Regeleinden uit velden die in mailheaders of het onderwerp terechtkomen voorkomen header-injectie.
-$name = str_replace(["\r", "\n"], ' ', $name);
-
-$body = "Nieuw bericht via " . SITE['url'] . "\n\n"
-    . "Naam:     {$name}\n"
-    . "Bedrijf:  " . ($company !== '' ? $company : '-') . "\n"
-    . "E-mail:   {$email}\n"
-    . "Telefoon: " . ($phone !== '' ? $phone : '-') . "\n\n"
-    . "Bericht:\n{$message}\n";
-
-$headers = [
-    'From'         => SITE['name'] . ' website <' . SITE['mail_from'] . '>',
-    'Reply-To'     => $email,
-    'Content-Type' => 'text/plain; charset=UTF-8',
-];
-
-$sent = mail(
-    SITE['email'],
-    mb_encode_mimeheader('Contactformulier: ' . $name, 'UTF-8'),
-    $body,
-    $headers,
-    '-f' . SITE['mail_from'],
-);
-
-if ($sent) {
-    track_event('contact');
+if (!rate_limit_allows('mail:form', MAIL_FORM_PER_CLIENT_PER_HOUR, MAIL_TOTAL_PER_DAY)) {
+    redirectToContact('limiet');
 }
+
+$sent = send_contact_mail($message, 'Contactformulier: ', SITE['url']);
 
 redirectToContact($sent ? 'ok' : 'fout');

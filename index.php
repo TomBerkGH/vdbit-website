@@ -5,9 +5,8 @@ declare(strict_types=1);
 require __DIR__ . '/includes/config.php';
 
 $pageTitle = 'VDB-IT | AI-specialist voor het MKB en de maakindustrie';
-$pageDescription = 'Tom van den Berk: zelfstandig software developer met bijna 20 jaar ervaring en specialist in AI. '
-    . 'AI-integraties, procesoptimalisatie, maatwerksoftware, MCP-koppelingen, snel prototypen én in productie met agentic workflows '
-    . 'en begeleiding om zelf met AI aan de slag te gaan.';
+$pageDescription = 'Tom van den Berk: AI-specialist met bijna 20 jaar ervaring in software. '
+    . 'AI-integraties, procesoptimalisatie en MCP-koppelingen voor het MKB en de maakindustrie.';
 $isHome = true;
 
 $content = require __DIR__ . '/includes/content.php';
@@ -22,20 +21,20 @@ require __DIR__ . '/includes/header.php';
     <div class="hero-glow" aria-hidden="true"></div>
     <div class="container hero-inner">
         <div class="hero-text">
-            <span class="label reveal">&gt; ai.connect(werkvloer)</span>
-            <h1 class="reveal">AI die werkt op <span class="gradient-text">de werkvloer.</span></h1>
-            <p class="lede reveal">
+            <span class="label">&gt; ai.connect(werkvloer)</span>
+            <h1>AI die werkt op <span class="gradient-text">de werkvloer.</span></h1>
+            <p class="lede">
                 Ik ben <?= e(SITE['owner']) ?>, zelfstandig software developer met bijna 20 jaar ervaring en specialist in AI.
                 Ik help MKB-bedrijven in de maakindustrie om AI in te zetten waar het écht iets oplevert:
                 in hun processen, machines en systemen.
             </p>
-            <div class="hero-actions reveal">
+            <div class="hero-actions">
                 <a class="btn" href="#contact">Plan een kennismaking <span aria-hidden="true">&rarr;</span></a>
                 <a class="btn btn-ghost" href="#cases">Bekijk wat ik bouw</a>
             </div>
-            <ul class="hero-facts reveal">
-                <li><strong>~20</strong> jaar software&shy;ontwikkeling</li>
-                <li><strong>AI</strong> specialist</li>
+            <ul class="hero-facts">
+                <li><strong>Bijna 20</strong> jaar software&shy;ontwikkeling</li>
+                <li><strong>AI</strong> als specialisme</li>
                 <li><strong>FLEX</strong> eigen industrieel platform</li>
             </ul>
         </div>
@@ -112,8 +111,8 @@ require __DIR__ . '/includes/header.php';
                 <span class="status">Live demo</span>
                 <h3>Deze website heeft zelf een MCP-server</h3>
                 <p>
-                    Koppel je AI-assistent aan deze site en vraag zelf naar mijn ervaring, diensten en projecten.
-                    Precies zo koppel ik AI aan de systemen van mijn klanten.
+                    Koppel je AI-assistent aan deze site en vraag zelf naar mijn ervaring, diensten en projecten,
+                    of laat je AI direct een bericht naar me sturen. Precies zo koppel ik AI aan de systemen van mijn klanten.
                 </p>
                 <p class="mcp-demo-hint">
                     In Claude: <em>Instellingen &rarr; Connectors &rarr; Aangepaste connector toevoegen</em> en plak de URL.
@@ -171,9 +170,14 @@ require __DIR__ . '/includes/header.php';
 
         <form class="contact-form card reveal" action="contact.php" method="post">
             <?php if ($contactStatus === 'ok'): ?>
-                <p class="form-message form-success" role="status">Bedankt voor je bericht! Ik neem snel contact met je op.</p>
+                <p class="form-message form-success" role="status" tabindex="-1">Bedankt voor je bericht! Ik neem snel contact met je op.</p>
+            <?php elseif ($contactStatus === 'limiet'): ?>
+                <p class="form-message form-error" role="alert" tabindex="-1">
+                    Er zijn net te veel berichten verstuurd. Probeer het later opnieuw of mail direct naar
+                    <a href="mailto:<?= e(SITE['email']) ?>"><?= e(SITE['email']) ?></a>.
+                </p>
             <?php elseif ($contactStatus === 'fout'): ?>
-                <p class="form-message form-error" role="alert">
+                <p class="form-message form-error" role="alert" tabindex="-1">
                     Het versturen is helaas niet gelukt. Controleer je gegevens of mail direct naar
                     <a href="mailto:<?= e(SITE['email']) ?>"><?= e(SITE['email']) ?></a>.
                 </p>
@@ -181,11 +185,11 @@ require __DIR__ . '/includes/header.php';
 
             <div class="field-row">
                 <label>Naam<input type="text" name="naam" required maxlength="100" autocomplete="name"></label>
-                <label>Bedrijf <small>(optioneel)</small><input type="text" name="bedrijf" maxlength="100" autocomplete="organization"></label>
+                <label><span>Bedrijf <small>(optioneel)</small></span><input type="text" name="bedrijf" maxlength="100" autocomplete="organization"></label>
             </div>
             <div class="field-row">
                 <label>E-mail<input type="email" name="email" required maxlength="150" autocomplete="email"></label>
-                <label>Telefoon <small>(optioneel)</small><input type="tel" name="telefoon" maxlength="30" autocomplete="tel"></label>
+                <label><span>Telefoon <small>(optioneel)</small></span><input type="tel" name="telefoon" maxlength="30" autocomplete="tel"></label>
             </div>
             <label>Bericht<textarea name="bericht" rows="5" required maxlength="5000"></textarea></label>
 
@@ -203,8 +207,11 @@ require __DIR__ . '/includes/header.php';
     '@context'    => 'https://schema.org',
     '@type'       => 'ProfessionalService',
     'name'        => SITE['name'],
-    'founder'     => SITE['owner'],
+    'founder'     => ['@type' => 'Person', 'name' => SITE['owner'], 'jobTitle' => 'AI-specialist en software developer'],
     'url'         => SITE['url'],
+    'logo'        => SITE['url'] . '/assets/img/logo-vdb-it.webp',
+    'image'       => SITE['url'] . '/assets/img/og-image.png',
+    'sameAs'      => [SITE['github']],
     'email'       => SITE['email'],
     'telephone'   => SITE['phone'],
     'description' => $pageDescription,
@@ -215,7 +222,7 @@ require __DIR__ . '/includes/header.php';
         'addressLocality' => SITE['city'],
         'addressCountry'  => 'NL',
     ],
-], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) ?>
+], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT | JSON_HEX_TAG) ?>
 </script>
 
 <?php require __DIR__ . '/includes/footer.php'; ?>
