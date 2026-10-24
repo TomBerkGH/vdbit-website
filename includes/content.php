@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /**
- * Inhoud van de site op één plek. Zowel de homepage (index.php) als de MCP-server (mcp.php)
+ * Inhoud van de site op één plek. Zowel de homepage (index.php) als de MCP-server (mcp/index.php)
  * gebruiken dit bestand, dus een wijziging hier staat meteen op beide.
  */
 return [

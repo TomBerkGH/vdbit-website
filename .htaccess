@@ -1,5 +1,12 @@
 # Instellingen voor de webserver (LiteSpeed/Apache). Lokaal in Herd (nginx) wordt dit bestand genegeerd.
 
+# MCP-server: /mcp (zonder slash) en het oude adres /mcp.php intern naar mcp/index.php,
+# zonder redirect, want AI-clients volgen een redirect bij een POST niet altijd.
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteRule ^mcp(\.php)?$ mcp/index.php [L]
+</IfModule>
+
 # Verborgen bestanden (zoals .ftp-deploy-sync-state.json en .htaccess) en databases nooit uitleveren.
 <FilesMatch "^\.|\.(sqlite|sqlite-journal|sqlite-wal|sqlite-shm)$">
     Require all denied

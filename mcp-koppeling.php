@@ -11,7 +11,7 @@ $pageDescription = 'Koppel je AI-assistent aan de MCP-server van vdb-it.nl en vr
 
 $content = require __DIR__ . '/includes/content.php';
 $tools = mcp_tools($content);
-$mcpUrl = SITE['url'] . '/mcp.php';
+$mcpUrl = SITE['url'] . '/mcp';
 
 $examples = [
     'Wie is ' . SITE['owner'] . ' en wat zijn de specialismen?',
@@ -162,9 +162,9 @@ require __DIR__ . '/includes/header.php';
                     sessies: elke POST krijgt direct een JSON-antwoord. Ondersteunde protocolversies:
                     <code>2025-11-25</code>, <code>2025-06-18</code>, <code>2025-03-26</code> en <code>2024-11-05</code>.
                 </p>
-                <a class="btn-github btn-github-light" href="<?= e(SITE['github']) ?>/blob/main/mcp.php" target="_blank" rel="noopener">
+                <a class="btn-github btn-github-light" href="<?= e(SITE['github']) ?>/blob/main/mcp/index.php" target="_blank" rel="noopener">
                     <?= github_icon() ?>
-                    <span>Bekijk mcp.php op GitHub</span>
+                    <span>Bekijk de MCP-server op GitHub</span>
                     <span aria-hidden="true">&nearr;</span>
                 </a>
             </div>

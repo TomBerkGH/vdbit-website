@@ -8,7 +8,7 @@ final class McpToolError extends RuntimeException
 }
 
 /**
- * De tools van de MCP-server. Gebruikt door mcp.php (de server zelf)
+ * De tools van de MCP-server. Gebruikt door mcp/index.php (de server zelf)
  * en mcp-koppeling.php (de uitlegpagina), zodat die altijd overeenkomen.
  * Elke handler krijgt de arguments van de aanroep mee.
  */

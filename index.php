@@ -10,7 +10,7 @@ $pageDescription = 'Tom van den Berk: AI-specialist met bijna 20 jaar ervaring i
 $isHome = true;
 
 $content = require __DIR__ . '/includes/content.php';
-$mcpUrl = SITE['url'] . '/mcp.php';
+$mcpUrl = SITE['url'] . '/mcp';
 
 $contactStatus = $_GET['contact'] ?? null;
 

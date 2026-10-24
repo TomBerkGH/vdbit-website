@@ -27,7 +27,7 @@ php -S localhost:8000
 | `includes/analytics.php`| Bezoekersstatistieken in SQLite (`data/analytics.sqlite`)  |
 | `stats/index.php`       | Statistiekenpagina op `/stats`, met wachtwoord beveiligd   |
 | `includes/content.php`  | Profiel, diensten, werkwijze en cases (site én MCP)        |
-| `mcp.php`               | MCP-server voor AI-assistenten (lezen en bericht sturen)   |
+| `mcp/index.php`         | MCP-server op `/mcp` (lezen en bericht sturen)             |
 | `includes/mcp-tools.php`| De tools van de MCP-server (server én uitlegpagina)        |
 | `mcp-koppeling.php`     | Uitlegpagina: hoe koppel je een AI-client aan de MCP       |
 | `assets/css/style.css`  | Alle styling; kleuren per thema bovenin                    |
@@ -50,7 +50,7 @@ Let op: staat er op de server nog een oude `index.html`, verwijder die dan. Ande
 
 ## MCP-server
 
-`mcp.php` is een MCP-server (Streamable HTTP, zonder sessies) met de leestools
+`mcp/index.php` is een MCP-server op `https://www.vdb-it.nl/mcp` (Streamable HTTP, zonder sessies) met de leestools
 `get_profile`, `list_services`, `list_cases`, `get_work_approach` en `get_contact_info`.
 De gegevens komen uit `includes/content.php`. Aanroepen verschijnen op `/stats`.
 
@@ -65,7 +65,7 @@ beperkt tot 5 pogingen per uur.
 Testen:
 
 ```bash
-claude mcp add --transport http vdb-it https://www.vdb-it.nl/mcp.php
+claude mcp add --transport http vdb-it https://www.vdb-it.nl/mcp
 ```
 
 ## Statistieken

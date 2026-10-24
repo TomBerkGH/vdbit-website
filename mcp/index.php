@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 /**
  * MCP-server (Model Context Protocol) van vdb-it.nl, als technische demo.
+ * Bereikbaar op /mcp (en via een rewrite in .htaccess ook nog op het oude adres /mcp.php).
  *
  * Streamable HTTP-transport zonder sessies: elke POST bevat een JSON-RPC-bericht (of een batch)
  * en krijgt direct een JSON-antwoord. De leestools halen hun gegevens uit includes/content.php,
@@ -14,9 +15,9 @@ declare(strict_types=1);
 // PHP-waarschuwingen mogen nooit in het JSON-antwoord belanden; ze gaan naar het errorlog.
 ini_set('display_errors', '0');
 
-require __DIR__ . '/includes/config.php';
-require __DIR__ . '/includes/mailer.php';
-require __DIR__ . '/includes/mcp-tools.php';
+require __DIR__ . '/../includes/config.php';
+require __DIR__ . '/../includes/mailer.php';
+require __DIR__ . '/../includes/mcp-tools.php';
 
 const MCP_PROTOCOL_VERSIONS = ['2025-11-25', '2025-06-18', '2025-03-26', '2024-11-05'];
 const MCP_SERVER_VERSION = '1.1.0';
@@ -56,7 +57,7 @@ try {
     respond(400, rpcError(null, -32700, 'Parse error'));
 }
 
-$tools = mcp_tools(require __DIR__ . '/includes/content.php');
+$tools = mcp_tools(require __DIR__ . '/../includes/content.php');
 
 // Batch: een lijst van berichten, elk met een eigen antwoord (notificaties krijgen er geen).
 if (is_array($body) && $body !== [] && array_is_list($body)) {
@@ -116,7 +117,7 @@ function handleMessage(mixed $message, array $tools): ?array
             default      => rpcError($id, -32601, 'Method not found: ' . $message['method']),
         };
     } catch (Throwable $exception) {
-        error_log('mcp.php: ' . $exception->getMessage());
+        error_log('mcp: ' . $exception->getMessage());
 
         return rpcError($id, -32603, 'Internal error');
     }
@@ -162,7 +163,7 @@ function callTool(int|string $id, array $params, array $tools): array
     } catch (McpToolError $error) {
         return rpcResult($id, toolError($error->getMessage()));
     } catch (Throwable $exception) {
-        error_log('mcp.php tool ' . $name . ': ' . $exception->getMessage());
+        error_log('mcp tool ' . $name . ': ' . $exception->getMessage());
 
         return rpcResult($id, toolError('Er ging iets mis bij het uitvoeren van deze tool. Probeer het later opnieuw.'));
     }
