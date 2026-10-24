@@ -11,6 +11,7 @@ declare(strict_types=1);
  */
 
 require __DIR__ . '/includes/config.php';
+require __DIR__ . '/includes/mcp-tools.php';
 
 const MCP_PROTOCOL_VERSIONS = ['2025-11-25', '2025-06-18', '2025-03-26'];
 const MCP_SERVER_VERSION = '1.0.0';
@@ -28,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header('Allow: POST, OPTIONS');
     respond(405, [
-        'error' => 'Dit is een MCP-endpoint. Koppel het aan een AI-assistent, zie ' . SITE['url'] . '/#mcp',
+        'error' => 'Dit is een MCP-endpoint. Koppel het aan een AI-assistent, zie ' . SITE['url'] . '/mcp-koppeling.php',
     ]);
 }
 
@@ -60,10 +61,10 @@ $result = match ($message['method']) {
     'initialize' => initialize($params),
     'ping'       => new stdClass(),
     'tools/list' => ['tools' => array_values(array_map(
-        static fn (array $tool): array => array_diff_key($tool, ['handler' => true]),
-        tools($content),
+        static fn (array $tool): array => array_diff_key($tool, ['handler' => true, 'summary' => true]),
+        mcp_tools($content),
     ))],
-    'tools/call' => callTool($id, $params, tools($content)),
+    'tools/call' => callTool($id, $params, mcp_tools($content)),
     default      => respond(200, rpcError($id, -32601, 'Method not found: ' . $message['method'])),
 };
 
@@ -90,62 +91,6 @@ function initialize(array $params): array
             . 'Use these tools to answer questions about experience, services, projects and how to get in touch. '
             . 'The content is in Dutch; translate it when the user writes in another language.',
     ];
-}
-
-/** Alle tools met hun beschrijving, invoerschema en de functie die het resultaat levert. */
-function tools(array $content): array
-{
-    $noInput = ['type' => 'object', 'properties' => new stdClass(), 'additionalProperties' => false];
-    $readOnly = ['readOnlyHint' => true, 'destructiveHint' => false, 'idempotentHint' => true, 'openWorldHint' => false];
-
-    $tools = [
-        [
-            'name'        => 'get_profile',
-            'title'       => 'Profiel',
-            'description' => 'Get the profile of ' . SITE['owner'] . ': role, years of experience, specialisms, sector focus, location and a short bio.',
-            'handler'     => static fn (): array => $content['profile'],
-        ],
-        [
-            'name'        => 'list_services',
-            'title'       => 'Diensten',
-            'description' => 'List the services ' . SITE['name'] . ' offers, such as AI integrations, process optimisation, custom software and MCP integrations.',
-            'handler'     => static fn (): array => [
-                'services' => array_map(static fn (array $service): array => array_diff_key($service, ['icon' => true]), $content['services']),
-            ],
-        ],
-        [
-            'name'        => 'list_cases',
-            'title'       => 'Projecten',
-            'description' => 'List example projects and products, including the industrial traceability system with MCP and the FLEX asset management platform.',
-            'handler'     => static fn (): array => ['cases' => $content['cases']],
-        ],
-        [
-            'name'        => 'get_work_approach',
-            'title'       => 'Werkwijze',
-            'description' => 'Describe how a project with ' . SITE['name'] . ' typically runs, from the first introduction to a live system.',
-            'handler'     => static fn (): array => ['steps' => $content['steps']],
-        ],
-        [
-            'name'        => 'get_contact_info',
-            'title'       => 'Contactgegevens',
-            'description' => 'Get contact details (phone, e-mail, address, website) to reach ' . SITE['owner'] . ' or plan an introduction.',
-            'handler'     => static fn (): array => [
-                'name'    => SITE['owner'],
-                'company' => SITE['name'],
-                'email'   => SITE['email'],
-                'phone'   => SITE['phone'],
-                'address' => SITE['street'] . ', ' . SITE['postcode'] . ' ' . SITE['city'],
-                'website' => SITE['url'],
-                'contact_form' => SITE['url'] . '/#contact',
-            ],
-        ],
-    ];
-
-    return array_column(
-        array_map(static fn (array $tool): array => $tool + ['inputSchema' => $noInput, 'annotations' => $readOnly], $tools),
-        null,
-        'name',
-    );
 }
 
 function callTool(mixed $id, array $params, array $tools): array

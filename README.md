@@ -26,6 +26,8 @@ php -S localhost:8000
 | `stats.php`             | Statistiekenpagina, met wachtwoord beveiligd               |
 | `includes/content.php`  | Profiel, diensten, werkwijze en cases (site én MCP)        |
 | `mcp.php`               | MCP-server (alleen-lezen) voor AI-assistenten              |
+| `includes/mcp-tools.php`| De tools van de MCP-server (server én uitlegpagina)        |
+| `mcp-koppeling.php`     | Uitlegpagina: hoe koppel je een AI-client aan de MCP       |
 | `assets/css/style.css`  | Alle styling; kleuren per thema bovenin                    |
 | `assets/js/main.js`     | Thema-knop, mobiel menu, animaties                         |
 

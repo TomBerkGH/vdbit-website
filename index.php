@@ -116,6 +116,7 @@ require __DIR__ . '/includes/header.php';
                 </p>
                 <p class="mcp-demo-hint">
                     In Claude: <em>Instellingen &rarr; Connectors &rarr; Aangepaste connector toevoegen</em> en plak de URL.
+                    <a href="mcp-koppeling.php">Uitleg voor andere AI-clients &rarr;</a>
                 </p>
                 <a class="btn-github" href="<?= e(SITE['github']) ?>" target="_blank" rel="noopener">
                     <?= github_icon() ?>
