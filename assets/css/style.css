@@ -320,6 +320,11 @@ p {
     stroke-linejoin: round;
 }
 
+.icon-btn-github svg {
+    fill: currentColor;
+    stroke: none;
+}
+
 [data-theme="light"] .icon-sun,
 [data-theme="dark"] .icon-moon {
     display: none;
@@ -727,6 +732,32 @@ p {
 .mcp-demo-hint em {
     font-style: normal;
     color: var(--tech-text);
+}
+
+.btn-github {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 20px;
+    padding: 10px 18px;
+    border-radius: 999px;
+    background: #f0f6fc;
+    color: #0d1117;
+    font-size: .9rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: transform .2s var(--ease), box-shadow .2s var(--ease);
+}
+
+.btn-github svg {
+    width: 20px;
+    height: 20px;
+    fill: currentColor;
+}
+
+.btn-github:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px -8px rgba(240, 246, 252, .35);
 }
 
 .mcp-demo-code {
@@ -1169,6 +1200,24 @@ p {
     padding-top: 20px;
     border-top: 1px solid var(--border);
     font-size: .85rem;
+}
+
+.footer-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 24px;
+}
+
+.footer-github {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.footer-github svg {
+    width: 16px;
+    height: 16px;
+    fill: currentColor;
 }
 
 /* --------------------------------------------------------------------------

@@ -20,7 +20,10 @@
     </div>
     <div class="container footer-bottom">
         <span>&copy; <?= date('Y') ?> <?= e(SITE['name']) ?></span>
-        <a href="privacy.php">Privacyverklaring</a>
+        <span class="footer-links">
+            <a class="footer-github" href="<?= e(SITE['github']) ?>" target="_blank" rel="noopener"><?= github_icon() ?>Broncode op GitHub</a>
+            <a href="privacy.php">Privacyverklaring</a>
+        </span>
     </div>
 </footer>
 </body>

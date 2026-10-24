@@ -117,6 +117,11 @@ require __DIR__ . '/includes/header.php';
                 <p class="mcp-demo-hint">
                     In Claude: <em>Instellingen &rarr; Connectors &rarr; Aangepaste connector toevoegen</em> en plak de URL.
                 </p>
+                <a class="btn-github" href="<?= e(SITE['github']) ?>" target="_blank" rel="noopener">
+                    <?= github_icon() ?>
+                    <span>Bekijk de broncode op GitHub</span>
+                    <span aria-hidden="true">&nearr;</span>
+                </a>
             </div>
             <div class="mcp-demo-code">
                 <div class="code-block">
