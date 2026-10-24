@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-require __DIR__ . '/includes/config.php';
+require __DIR__ . '/../includes/config.php';
 
 session_start([
     'cookie_httponly' => true,
@@ -16,7 +16,7 @@ $loginError = false;
 if (isset($_GET['uitloggen'])) {
     $_SESSION = [];
     session_destroy();
-    header('Location: stats.php', true, 303);
+    header('Location: /stats/', true, 303);
     exit;
 }
 
@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'secure'   => !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off',
         ]);
 
-        header('Location: stats.php', true, 303);
+        header('Location: /stats/', true, 303);
         exit;
     }
 
@@ -101,7 +101,7 @@ $pageDescription = 'Bezoekersstatistieken van vdb-it.nl';
 $noIndex = true;
 $trackPageview = false;
 
-require __DIR__ . '/includes/header.php';
+require __DIR__ . '/../includes/header.php';
 ?>
 
 <section class="section page stats">
@@ -178,4 +178,4 @@ require __DIR__ . '/includes/header.php';
     </div>
 </section>
 
-<?php require __DIR__ . '/includes/footer.php'; ?>
+<?php require __DIR__ . '/../includes/footer.php'; ?>

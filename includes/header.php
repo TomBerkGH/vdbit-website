@@ -9,8 +9,8 @@ if ($trackPageview ?? true) {
     track_pageview();
 }
 
-$base = $isHome ? '' : './';
-$canonical = SITE['url'] . '/' . ($isHome ? '' : basename($_SERVER['SCRIPT_NAME']));
+$base = $isHome ? '' : '/';
+$canonical = SITE['url'] . ($isHome ? '/' : (parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/'));
 ?>
 <!DOCTYPE html>
 <html lang="nl">
@@ -31,7 +31,7 @@ $canonical = SITE['url'] . '/' . ($isHome ? '' : basename($_SERVER['SCRIPT_NAME'
     <meta property="og:image" content="<?= e(SITE['url']) ?>/assets/img/logo-vdb-it.webp">
 
     <link rel="icon" href="<?= asset('assets/img/favicon.svg') ?>" type="image/svg+xml">
-    <link rel="preload" href="assets/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="<?= asset('assets/css/style.css') ?>">
 
     <script>
@@ -52,9 +52,9 @@ $canonical = SITE['url'] . '/' . ($isHome ? '' : basename($_SERVER['SCRIPT_NAME'
 
 <header class="site-header">
     <div class="container header-inner">
-        <a class="brand" href="./" aria-label="<?= e(SITE['name']) ?> - naar de homepage">
-            <img class="logo logo-light" src="assets/img/logo-vdb-it.webp" alt="<?= e(SITE['name']) ?>" width="643" height="315">
-            <img class="logo logo-dark" src="assets/img/logo-vdb-it-dark.webp" alt="" width="643" height="315">
+        <a class="brand" href="/" aria-label="<?= e(SITE['name']) ?> - naar de homepage">
+            <img class="logo logo-light" src="/assets/img/logo-vdb-it.webp" alt="<?= e(SITE['name']) ?>" width="643" height="315">
+            <img class="logo logo-dark" src="/assets/img/logo-vdb-it-dark.webp" alt="" width="643" height="315">
         </a>
 
         <nav class="nav" id="nav" aria-label="Hoofdmenu">
@@ -62,7 +62,7 @@ $canonical = SITE['url'] . '/' . ($isHome ? '' : basename($_SERVER['SCRIPT_NAME'
             <a href="<?= $base ?>#werkwijze">Werkwijze</a>
             <a href="<?= $base ?>#cases">Cases</a>
             <a href="<?= $base ?>#over-mij">Over mij</a>
-            <a href="mcp-koppeling.php">MCP-demo</a>
+            <a href="/mcp-koppeling.php">MCP-demo</a>
             <a class="btn btn-small" href="<?= $base ?>#contact">Contact</a>
         </nav>
 

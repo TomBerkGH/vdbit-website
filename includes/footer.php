@@ -3,8 +3,8 @@
 <footer class="site-footer">
     <div class="container footer-inner">
         <div>
-            <img class="logo logo-light" src="assets/img/logo-vdb-it.webp" alt="<?= e(SITE['name']) ?>" width="643" height="315" loading="lazy">
-            <img class="logo logo-dark" src="assets/img/logo-vdb-it-dark.webp" alt="" width="643" height="315" loading="lazy">
+            <img class="logo logo-light" src="/assets/img/logo-vdb-it.webp" alt="<?= e(SITE['name']) ?>" width="643" height="315" loading="lazy">
+            <img class="logo logo-dark" src="/assets/img/logo-vdb-it-dark.webp" alt="" width="643" height="315" loading="lazy">
             <p class="footer-tagline">AI en software voor het MKB en de maakindustrie.</p>
         </div>
         <address>
@@ -22,7 +22,7 @@
         <span>&copy; <?= date('Y') ?> <?= e(SITE['name']) ?></span>
         <span class="footer-links">
             <a class="footer-github" href="<?= e(SITE['github']) ?>" target="_blank" rel="noopener"><?= github_icon() ?>Broncode op GitHub</a>
-            <a href="privacy.php">Privacyverklaring</a>
+            <a href="/privacy.php">Privacyverklaring</a>
         </span>
     </div>
 </footer>

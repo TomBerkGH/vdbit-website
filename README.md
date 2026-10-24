@@ -23,7 +23,7 @@ php -S localhost:8000
 | `includes/header.php`   | `<head>`, logo en menu                                     |
 | `includes/footer.php`   | Footer                                                     |
 | `includes/analytics.php`| Bezoekersstatistieken in SQLite (`data/analytics.sqlite`)  |
-| `stats.php`             | Statistiekenpagina, met wachtwoord beveiligd               |
+| `stats/index.php`       | Statistiekenpagina op `/stats`, met wachtwoord beveiligd   |
 | `includes/content.php`  | Profiel, diensten, werkwijze en cases (site én MCP)        |
 | `mcp.php`               | MCP-server (alleen-lezen) voor AI-assistenten              |
 | `includes/mcp-tools.php`| De tools van de MCP-server (server én uitlegpagina)        |
@@ -42,7 +42,7 @@ Stel eenmalig deze secrets in onder *Settings → Secrets and variables → Acti
 | `FTP_USERNAME`   | je FTP-gebruikersnaam             |
 | `FTP_PASSWORD`   | je FTP-wachtwoord                 |
 | `FTP_SERVER_DIR` | `public_html/` (met slash op het eind) |
-| `STATS_PASSWORD_HASH` | hash van je wachtwoord voor `stats.php` (zie hieronder) |
+| `STATS_PASSWORD_HASH` | hash van je wachtwoord voor `/stats` (zie hieronder) |
 
 Let op: staat er op de server nog een oude `index.html`, verwijder die dan. Anders krijgt die voorrang op `index.php`.
 
@@ -50,7 +50,7 @@ Let op: staat er op de server nog een oude `index.html`, verwijder die dan. Ande
 
 `mcp.php` is een MCP-server (Streamable HTTP, zonder sessies) met alleen-lezen tools:
 `get_profile`, `list_services`, `list_cases`, `get_work_approach` en `get_contact_info`.
-De gegevens komen uit `includes/content.php`. Aanroepen verschijnen in `stats.php`.
+De gegevens komen uit `includes/content.php`. Aanroepen verschijnen op `/stats`.
 
 Testen:
 
@@ -61,7 +61,7 @@ claude mcp add --transport http vdb-it https://www.vdb-it.nl/mcp.php
 ## Statistieken
 
 Bezoeken worden zonder cookies en zonder IP-adres bijgehouden in `data/analytics.sqlite`
-(staat niet in git en wordt niet overschreven bij een deploy). Bekijk ze op `/stats.php`.
+(staat niet in git en wordt niet overschreven bij een deploy). Bekijk ze op `/stats`.
 
 Wachtwoord instellen:
 
