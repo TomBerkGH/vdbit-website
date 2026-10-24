@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 /**
  * MCP-server (Model Context Protocol) van vdb-it.nl, als technische demo.
- * Bereikbaar op /mcp (en via een rewrite in .htaccess ook nog op het oude adres /mcp.php).
+ * Bereikbaar op /mcp (via een rewrite in .htaccess, zonder redirect naar /mcp/).
  *
  * Streamable HTTP-transport zonder sessies: elke POST bevat een JSON-RPC-bericht (of een batch)
  * en krijgt direct een JSON-antwoord. De leestools halen hun gegevens uit includes/content.php,
