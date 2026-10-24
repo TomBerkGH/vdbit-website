@@ -1,0 +1,8 @@
+.idea/
+.superpowers/
+.DS_Store
+Thumbs.db
+
+# Wachtwoord voor stats.php en de statistiekendatabase horen niet in git
+includes/secrets.php
+data/*.sqlite*
