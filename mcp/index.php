@@ -19,9 +19,9 @@ require __DIR__ . '/../includes/config.php';
 require __DIR__ . '/../includes/mailer.php';
 require __DIR__ . '/../includes/mcp-tools.php';
 
-const MCP_PROTOCOL_VERSIONS = ['2025-11-25', '2025-06-18', '2025-03-26', '2024-11-05'];
-const MCP_SERVER_VERSION = '1.1.0';
+const MCP_SERVER_VERSION = '1.2.0';
 const MCP_MAX_BODY_BYTES = 100_000;
+const MCP_MAX_BATCH = 10;
 
 // Openbaar endpoint: browsergebaseerde MCP-clients mogen er overal vandaan bij.
 header('Access-Control-Allow-Origin: *');
@@ -42,7 +42,14 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 // MCP-clients sturen altijd JSON. Dit weert ook "simpele" cross-site formulierverzoeken.
 if (!str_starts_with(strtolower($_SERVER['CONTENT_TYPE'] ?? ''), 'application/json')) {
-    respond(415, rpcError(null, -32700, 'Content-Type must be application/json'));
+    respond(415, rpcError(null, -32600, 'Content-Type must be application/json'));
+}
+
+// Een client die een protocolversie meestuurt die we niet kennen, krijgt volgens de specificatie een 400.
+$protocolHeader = $_SERVER['HTTP_MCP_PROTOCOL_VERSION'] ?? null;
+
+if ($protocolHeader !== null && !in_array($protocolHeader, MCP_PROTOCOL_VERSIONS, true)) {
+    respond(400, rpcError(null, -32600, 'Unsupported MCP-Protocol-Version: ' . mb_substr($protocolHeader, 0, 20)));
 }
 
 $input = (string) file_get_contents('php://input', length: MCP_MAX_BODY_BYTES + 1);
@@ -61,6 +68,10 @@ $tools = mcp_tools(require __DIR__ . '/../includes/content.php');
 
 // Batch: een lijst van berichten, elk met een eigen antwoord (notificaties krijgen er geen).
 if (is_array($body) && $body !== [] && array_is_list($body)) {
+    if (count($body) > MCP_MAX_BATCH) {
+        respond(400, rpcError(null, -32600, 'Batch too large (max ' . MCP_MAX_BATCH . ' messages)'));
+    }
+
     $responses = array_values(array_filter(array_map(static fn (mixed $message): ?array => handleMessage($message, $tools), $body)));
     $responses === [] ? respond(202) : respond(200, $responses);
 }

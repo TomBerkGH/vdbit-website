@@ -170,14 +170,14 @@ require __DIR__ . '/includes/header.php';
 
         <form class="contact-form card reveal" action="contact.php" method="post">
             <?php if ($contactStatus === 'ok'): ?>
-                <p class="form-message form-success" role="status" tabindex="-1">Bedankt voor je bericht! Ik neem snel contact met je op.</p>
+                <p id="formulier-melding" class="form-message form-success" role="status" tabindex="-1">Bedankt voor je bericht! Ik neem snel contact met je op.</p>
             <?php elseif ($contactStatus === 'limiet'): ?>
-                <p class="form-message form-error" role="alert" tabindex="-1">
+                <p id="formulier-melding" class="form-message form-error" role="alert" tabindex="-1">
                     Er zijn net te veel berichten verstuurd. Probeer het later opnieuw of mail direct naar
                     <a href="mailto:<?= e(SITE['email']) ?>"><?= e(SITE['email']) ?></a>.
                 </p>
             <?php elseif ($contactStatus === 'fout'): ?>
-                <p class="form-message form-error" role="alert" tabindex="-1">
+                <p id="formulier-melding" class="form-message form-error" role="alert" tabindex="-1">
                     Het versturen is helaas niet gelukt. Controleer je gegevens of mail direct naar
                     <a href="mailto:<?= e(SITE['email']) ?>"><?= e(SITE['email']) ?></a>.
                 </p>

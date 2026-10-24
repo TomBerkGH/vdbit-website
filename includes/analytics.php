@@ -110,12 +110,12 @@ function analytics_should_track(): bool
         && !isset($_COOKIE[ANALYTICS_NOTRACK_COOKIE]);
 }
 
+/** Het PHP-bestand dat de pagina maakt, niet de opgevraagde URL: zo kan niemand verzonnen adressen in de statistieken zetten. */
 function analytics_path(): string
 {
-    $path = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
-    $path = preg_replace('#/index\.php$#', '/', $path);
+    $path = preg_replace('#/index\.php$#', '/', $_SERVER['SCRIPT_NAME'] ?? '/');
 
-    return mb_substr($path, 0, 200);
+    return mb_substr($path !== '' ? $path : '/', 0, 200);
 }
 
 /** Alleen de domeinnaam van een externe verwijzer, zonder pad of parameters. */
@@ -173,6 +173,11 @@ function analytics_network(): string
         return '';
     }
 
+    // IPv4-adres in IPv6-vorm (::ffff:a.b.c.d): behandel het als gewoon IPv4, anders lijkt iedereen hetzelfde netwerk.
+    if (strlen($packed) === 16 && str_starts_with($packed, str_repeat("\0", 10) . "\xff\xff")) {
+        $packed = substr($packed, 12);
+    }
+
     return bin2hex(substr($packed, 0, strlen($packed) === 4 ? 3 : 6));
 }
 
@@ -198,11 +203,15 @@ function analytics_salt(string $day): string
 /**
  * Registreert een poging en zegt of die binnen de limieten valt.
  *
- * $action heeft de vorm "groep:naam", bijvoorbeeld "mail:form". De limiet per bezoeker geldt per actie,
- * de daglimiet voor de hele groep: zo delen het formulier en de MCP-server één dagbudget voor mail.
- * Bij een databasefout wordt de actie geweigerd: liever geen mail dan een volle inbox.
+ * Limieten gelden per netwerk (zie analytics_network()), per uur en optioneel per dag. Een totale daglimiet
+ * voor alle bezoekers samen is optioneel en alleen bedoeld voor acties waarbij het niet erg is dat één
+ * misbruiker ze voor iedereen kan blokkeren (zoals de MCP-demo); het contactformulier en de login hebben er
+ * daarom geen. Let op: de bezoekerscode wisselt om middernacht mee met het dagelijkse zout, dus de tellers
+ * per netwerk beginnen dan opnieuw.
+ *
+ * @return bool|null true = toegestaan, false = limiet bereikt, null = database niet beschikbaar
  */
-function rate_limit_allows(string $action, int $perClientPerHour, int $totalPerDay): bool
+function rate_limit_allows(string $action, int $perClientPerHour, ?int $perClientPerDay = null, ?int $totalPerDay = null): ?bool
 {
     $db = null;
 
@@ -210,19 +219,21 @@ function rate_limit_allows(string $action, int $perClientPerHour, int $totalPerD
         $db = analytics_db();
         $now = time();
         $client = substr(hash('sha256', analytics_salt(date('Y-m-d')) . analytics_network()), 0, 16);
-        $group = strtok($action, ':') . ':%';
 
         // Tellen en registreren in één transactie, zodat gelijktijdige verzoeken de limiet niet omzeilen.
         $db->exec('BEGIN IMMEDIATE');
         $db->prepare('DELETE FROM rate_limits WHERE created_at < ?')->execute([$now - 86400]);
 
-        $perClient = $db->prepare('SELECT COUNT(*) FROM rate_limits WHERE action = ? AND client = ? AND created_at >= ?');
-        $perClient->execute([$action, $client, $now - 3600]);
+        $count = static function (string $where, array $params) use ($db): int {
+            $statement = $db->prepare("SELECT COUNT(*) FROM rate_limits WHERE action = ? AND {$where}");
+            $statement->execute($params);
 
-        $total = $db->prepare('SELECT COUNT(*) FROM rate_limits WHERE action LIKE ? AND created_at >= ?');
-        $total->execute([$group, $now - 86400]);
+            return (int) $statement->fetchColumn();
+        };
 
-        $allowed = (int) $perClient->fetchColumn() < $perClientPerHour && (int) $total->fetchColumn() < $totalPerDay;
+        $allowed = $count('client = ? AND created_at >= ?', [$action, $client, $now - 3600]) < $perClientPerHour
+            && ($perClientPerDay === null || $count('client = ? AND created_at >= ?', [$action, $client, $now - 86400]) < $perClientPerDay)
+            && ($totalPerDay === null || $count('created_at >= ?', [$action, $now - 86400]) < $totalPerDay);
 
         if ($allowed) {
             $db->prepare('INSERT INTO rate_limits (action, client, created_at) VALUES (?, ?, ?)')->execute([$action, $client, $now]);
@@ -239,7 +250,7 @@ function rate_limit_allows(string $action, int $perClientPerHour, int $totalPerD
 
         error_log('rate_limit_allows: ' . $exception->getMessage());
 
-        return false;
+        return null;
     }
 }
 

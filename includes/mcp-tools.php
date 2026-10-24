@@ -7,6 +7,9 @@ final class McpToolError extends RuntimeException
 {
 }
 
+/** Protocolversies die de server ondersteunt, nieuwste eerst. Ook getoond op mcp-koppeling.php. */
+const MCP_PROTOCOL_VERSIONS = ['2025-11-25', '2025-06-18', '2025-03-26', '2024-11-05'];
+
 /**
  * De tools van de MCP-server. Gebruikt door mcp/index.php (de server zelf)
  * en mcp-koppeling.php (de uitlegpagina), zodat die altijd overeenkomen.
@@ -92,9 +95,11 @@ function mcp_tools(array $content): array
                     throw new McpToolError('Naam, een geldig e-mailadres en een bericht zijn verplicht.');
                 }
 
-                if (!rate_limit_allows('mail:mcp', MAIL_MCP_PER_CLIENT_PER_HOUR, MAIL_TOTAL_PER_DAY)) {
-                    throw new McpToolError('Het bericht kan nu niet worden verstuurd (limiet bereikt of tijdelijke storing). '
-                        . 'Probeer het later opnieuw, of mail of bel ' . SITE['owner'] . ' direct: ' . SITE['email'] . ', ' . SITE['phone'] . '.');
+                $allowed = rate_limit_allows('mail:mcp', MAIL_MCP_PER_CLIENT_PER_HOUR, null, MAIL_MCP_TOTAL_PER_DAY);
+
+                if ($allowed !== true) {
+                    throw new McpToolError(($allowed === false ? 'Er zijn te veel berichten via de MCP-koppeling verstuurd.' : 'Door een tijdelijke storing kan het bericht nu niet worden verstuurd.')
+                        . ' Mail of bel ' . SITE['owner'] . ' direct: ' . SITE['email'] . ', ' . SITE['phone'] . ', of gebruik het contactformulier op ' . SITE['url'] . '/#contact.');
                 }
 
                 if (!send_contact_mail($message, 'MCP-bericht: ', 'de MCP-server van ' . SITE['url'])) {

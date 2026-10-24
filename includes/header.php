@@ -32,8 +32,11 @@ $canonical = SITE['url'] . ($isHome ? '/' : (parse_url($_SERVER['REQUEST_URI'] ?
     <meta property="og:image" content="<?= e(SITE['url']) ?>/assets/img/og-image.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="VDB-IT: AI die werkt op de werkvloer. Tom van den Berk, AI-specialist voor het MKB en de maakindustrie.">
     <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image:alt" content="VDB-IT: AI die werkt op de werkvloer. Tom van den Berk, AI-specialist voor het MKB en de maakindustrie.">
 
+    <link rel="icon" href="<?= asset('assets/img/favicon-32.png') ?>" type="image/png" sizes="32x32">
     <link rel="icon" href="<?= asset('assets/img/favicon.svg') ?>" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png">
     <link rel="preload" href="/assets/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>

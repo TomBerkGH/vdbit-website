@@ -26,6 +26,12 @@ const SITE = [
 
 date_default_timezone_set('Europe/Amsterdam');
 
+// Adressen als /index.php/iets-anders bestaan niet: geef een 404 in plaats van de pagina nog eens te tonen.
+if (($_SERVER['PATH_INFO'] ?? '') !== '') {
+    http_response_code(404);
+    exit('Pagina niet gevonden');
+}
+
 require __DIR__ . '/analytics.php';
 
 function e(string $value): string

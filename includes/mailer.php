@@ -7,10 +7,12 @@ declare(strict_types=1);
  * Gebruikt door het contactformulier (contact.php) en de MCP-tool send_contact_request.
  */
 
-// Limieten tegen spam. Formulier en MCP delen samen één daglimiet (zie rate_limit_allows()).
+// Limieten tegen spam, per netwerk (zie rate_limit_allows()). Het formulier heeft bewust geen totale
+// daglimiet, zodat één misbruiker het niet voor iedereen kan blokkeren. De MCP-demo heeft die wel.
 const MAIL_FORM_PER_CLIENT_PER_HOUR = 5;
+const MAIL_FORM_PER_CLIENT_PER_DAY = 10;
 const MAIL_MCP_PER_CLIENT_PER_HOUR = 10;
-const MAIL_TOTAL_PER_DAY = 30;
+const MAIL_MCP_TOTAL_PER_DAY = 30;
 
 /**
  * Schoont de velden op en controleert ze.

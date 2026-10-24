@@ -60,7 +60,7 @@ require __DIR__ . '/includes/header.php';
                 </p>
                 <p>
                     In een fabriek kan dat een ERP-, MES- of traceability-systeem zijn. Je vraagt dan bijvoorbeeld
-                    <em>"welke orders lopen vandaag achter?"</em> en de AI haalt het antwoord direct uit de bron.
+                    <em>&ldquo;welke orders lopen vandaag achter?&rdquo;</em> en de AI haalt het antwoord direct uit de bron.
                     Hier is de bron gewoon deze website.
                 </p>
             </div>
@@ -88,7 +88,7 @@ require __DIR__ . '/includes/header.php';
                 <h3>Claude Code</h3>
                 <p>Eén commando in je terminal:</p>
                 <div class="code-block code-block-solid">
-                    <pre tabindex="0" aria-label="Codevoorbeeld"><code>claude mcp add --transport http vdb-it <?= e($mcpUrl) ?></code></pre>
+                    <pre tabindex="0" role="region" aria-label="Commando voor Claude Code"><code>claude mcp add --transport http vdb-it <?= e($mcpUrl) ?></code></pre>
                 </div>
             </article>
 
@@ -96,7 +96,7 @@ require __DIR__ . '/includes/header.php';
                 <h3>VS Code <small>(GitHub Copilot)</small></h3>
                 <p>Zet dit in <code>.vscode/mcp.json</code>:</p>
                 <div class="code-block code-block-solid">
-                    <pre tabindex="0" aria-label="Codevoorbeeld"><code><?= e($vscodeConfig) ?></code></pre>
+                    <pre tabindex="0" role="region" aria-label="Configuratie voor VS Code"><code><?= e($vscodeConfig) ?></code></pre>
                 </div>
             </article>
 
@@ -104,7 +104,7 @@ require __DIR__ . '/includes/header.php';
                 <h3>Cursor</h3>
                 <p>Zet dit in <code>~/.cursor/mcp.json</code>:</p>
                 <div class="code-block code-block-solid">
-                    <pre tabindex="0" aria-label="Codevoorbeeld"><code><?= e($cursorConfig) ?></code></pre>
+                    <pre tabindex="0" role="region" aria-label="Configuratie voor Cursor"><code><?= e($cursorConfig) ?></code></pre>
                 </div>
             </article>
         </div>
@@ -126,7 +126,7 @@ require __DIR__ . '/includes/header.php';
             <ul class="mcp-facts">
                 <li><span>Ontvanger</span><strong>Altijd alleen <?= e(SITE['name']) ?></strong></li>
                 <li><span>Bevestiging</span><strong>Door de gebruiker</strong></li>
-                <li><span>Limiet</span><strong><?= MAIL_MCP_PER_CLIENT_PER_HOUR ?> per uur, <?= MAIL_TOTAL_PER_DAY ?> per dag</strong></li>
+                <li><span>Limiet</span><strong><?= MAIL_MCP_PER_CLIENT_PER_HOUR ?> per uur, <?= MAIL_MCP_TOTAL_PER_DAY ?> per dag</strong></li>
             </ul>
         </div>
 
@@ -138,7 +138,7 @@ require __DIR__ . '/includes/header.php';
         </ul>
 
         <h2 class="mcp-heading">Beschikbare tools</h2>
-        <div class="card tool-table-wrap" tabindex="0" role="region" aria-label="Beschikbare tools">
+        <div class="card tool-table-wrap">
             <table class="tool-table">
                 <thead>
                     <tr><th scope="col">Tool</th><th scope="col">Wat het oplevert</th></tr>
@@ -158,9 +158,9 @@ require __DIR__ . '/includes/header.php';
             <div>
                 <h2>Voor ontwikkelaars</h2>
                 <p>
-                    De server is één PHP-bestand zonder framework. Hij spreekt JSON-RPC 2.0 via Streamable HTTP, zonder
-                    sessies: elke POST krijgt direct een JSON-antwoord. Ondersteunde protocolversies:
-                    <code>2025-11-25</code>, <code>2025-06-18</code>, <code>2025-03-26</code> en <code>2024-11-05</code>.
+                    De server bestaat uit een paar eenvoudige PHP-bestanden, zonder framework. Hij spreekt JSON-RPC 2.0 via
+                    Streamable HTTP, zonder sessies: elke POST krijgt direct een JSON-antwoord. Ondersteunde protocolversies:
+                    <?= implode(', ', array_map(static fn (string $version): string => '<code>' . e($version) . '</code>', MCP_PROTOCOL_VERSIONS)) ?>.
                 </p>
                 <a class="btn-github btn-github-light" href="<?= e(SITE['github']) ?>/blob/main/mcp/index.php" target="_blank" rel="noopener">
                     <?= github_icon() ?>
@@ -170,7 +170,7 @@ require __DIR__ . '/includes/header.php';
             </div>
             <div class="code-block code-block-solid">
                 <span class="code-label">Zelf proberen met curl</span>
-                <pre tabindex="0" aria-label="Codevoorbeeld"><code><?= e($curlExample) ?></code></pre>
+                <pre tabindex="0" role="region" aria-label="Voorbeeld met curl"><code><?= e($curlExample) ?></code></pre>
             </div>
         </div>
 

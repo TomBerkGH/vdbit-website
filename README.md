@@ -58,9 +58,13 @@ Met `send_contact_request` kan een AI-assistent een bericht sturen. Dat gaat via
 het contactformulier (`includes/mailer.php`), altijd naar het adres uit `config.php`, met als onderwerp
 "MCP-bericht: [naam]".
 
-Limieten tegen spam (`MAIL_*` in `includes/mailer.php`): het formulier maximaal 5 berichten per uur
-per bezoeker, de MCP-tool 10 per uur, en samen maximaal 30 per dag. Het inloggen op `/stats` is
-beperkt tot 5 pogingen per uur.
+Limieten tegen spam (`MAIL_*` in `includes/mailer.php`), per netwerk (ingekort IP-adres):
+
+- Formulier: 5 berichten per uur en 10 per dag. Geen totale daglimiet, zodat één misbruiker het
+  formulier niet voor iedereen kan blokkeren. Werkt de database niet, dan wordt er toch verstuurd.
+- MCP-tool: 10 berichten per uur, en voor alle bezoekers samen 30 per dag.
+- Inloggen op `/stats`: 5 pogingen per uur (`STATS_LOGIN_PER_CLIENT_PER_HOUR`), geen totale limiet.
+- MCP-batches: maximaal 10 berichten per verzoek.
 
 Testen:
 

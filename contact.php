@@ -10,7 +10,8 @@ require __DIR__ . '/includes/mailer.php';
 
 function redirectToContact(string $status): never
 {
-    header('Location: ./?contact=' . $status . '#contact', true, 303);
+    // Het anker wijst naar de melding zelf (die focus kan krijgen), niet naar de sectie.
+    header('Location: ./?contact=' . $status . '#formulier-melding', true, 303);
     exit;
 }
 
@@ -37,7 +38,8 @@ if ($message === null) {
     redirectToContact('fout');
 }
 
-if (!rate_limit_allows('mail:form', MAIL_FORM_PER_CLIENT_PER_HOUR, MAIL_TOTAL_PER_DAY)) {
+// Bij een databasefout (null) toch versturen: het contactformulier is te belangrijk om dan dicht te zetten.
+if (rate_limit_allows('mail:form', MAIL_FORM_PER_CLIENT_PER_HOUR, MAIL_FORM_PER_CLIENT_PER_DAY) === false) {
     redirectToContact('limiet');
 }
 

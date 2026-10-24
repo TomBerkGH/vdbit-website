@@ -49,6 +49,16 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // Sluiten bij een klik buiten het menu, en als het venster breder wordt dan de mobiele weergave.
+    document.addEventListener('click', (event) => {
+        if (nav?.classList.contains('is-open') && !nav.contains(event.target) && !navToggle.contains(event.target)) {
+            setMenu(false);
+        }
+    });
+    window.matchMedia('(max-width: 860px)').addEventListener('change', (event) => {
+        if (!event.matches && nav) setMenu(false);
+    });
+
     // Rand onder de header zodra er gescrold wordt.
     const header = document.querySelector('.site-header');
     const onScroll = () => header.classList.toggle('is-scrolled', window.scrollY > 8);
@@ -79,7 +89,11 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         } catch (e) {}
 
-        form.querySelector('.form-message')?.focus();
+        // Pas focussen als de browser klaar is met naar het anker springen, anders gaat de focus verloren.
+        const message = form.querySelector('.form-message');
+        if (message) {
+            window.addEventListener('load', () => setTimeout(() => message.focus(), 0));
+        }
     }
 
     // Elementen laten infaden zodra ze in beeld komen.

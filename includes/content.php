@@ -69,7 +69,7 @@ return [
             'title'   => 'Elk paneel volgen over de productievloer',
             'status'  => 'Lopend project',
             'context' => 'Producent van badkamermeubelen',
-            'text'    => 'Een traceability-systeem dat industriële barcodescanners uitleest en vastlegt waar elk paneel zich in de productie bevindt. Het systeem heeft een volledige MCP-server, zodat AI-assistenten rechtstreeks met de productiedata kunnen werken. Vragen als "waar is dit paneel nu?" of "welke orders staan stil?" beantwoordt AI direct uit de bron.',
+            'text'    => 'Een traceability-systeem dat industriële barcodescanners uitleest en vastlegt waar elk paneel zich in de productie bevindt. Het systeem heeft een volledige MCP-server, zodat AI-assistenten rechtstreeks met de productiedata kunnen werken. Vragen als “waar is dit paneel nu?” of “welke orders staan stil?” beantwoordt AI direct uit de bron.',
             'tags'    => ['Industriële scanners', 'Traceability', 'MCP', 'AI-integratie'],
             'link'    => null,
         ],

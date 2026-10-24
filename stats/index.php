@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 require __DIR__ . '/../includes/config.php';
 
+// Alleen een limiet per netwerk, geen totale daglimiet: anders kan een ander jou buitensluiten.
 const STATS_LOGIN_PER_CLIENT_PER_HOUR = 5;
-const STATS_LOGIN_TOTAL_PER_DAY = 30;
 
 $secure = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off';
 
@@ -16,11 +16,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' || isset($_COOKIE[session_name()])) {
         'cookie_httponly' => true,
         'cookie_samesite' => 'Strict',
         'cookie_secure'   => $secure,
+        'use_strict_mode' => true,
     ]);
 }
 
 $passwordHash = stats_password_hash();
 $loginError = null;
+
+// Eerst controleren of de database werkt, zodat een storing niet als "te veel inlogpogingen" verschijnt.
+try {
+    analytics_db();
+    $dbError = false;
+} catch (Throwable $exception) {
+    error_log('stats: ' . $exception->getMessage());
+    $dbError = true;
+}
 
 if (isset($_GET['uitloggen'])) {
     if (session_status() === PHP_SESSION_ACTIVE) {
@@ -33,10 +43,13 @@ if (isset($_GET['uitloggen'])) {
     exit;
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && $passwordHash !== '') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && $passwordHash !== '' && !$dbError) {
     $password = $_POST['wachtwoord'] ?? '';
+    $allowed = rate_limit_allows('login:stats', STATS_LOGIN_PER_CLIENT_PER_HOUR);
 
-    if (!rate_limit_allows('login:stats', STATS_LOGIN_PER_CLIENT_PER_HOUR, STATS_LOGIN_TOTAL_PER_DAY)) {
+    if ($allowed === null) {
+        $dbError = true;
+    } elseif ($allowed === false) {
         $loginError = 'Te veel inlogpogingen. Probeer het over een uur opnieuw.';
     } elseif (is_string($password) && password_verify($password, $passwordHash)) {
         session_regenerate_id(true);
@@ -58,8 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $passwordHash !== '') {
     }
 }
 
-$loggedIn = ($_SESSION['stats'] ?? false) === true;
-$dbError = false;
+$loggedIn = !$dbError && ($_SESSION['stats'] ?? false) === true;
 
 $periods = [7 => '7 dagen', 30 => '30 dagen', 90 => '90 dagen', 365 => '12 maanden'];
 $days = (int) ($_GET['periode'] ?? 30);

@@ -31,8 +31,9 @@ require __DIR__ . '/includes/header.php';
         <h2>Waarom?</h2>
         <p>
             Ik gebruik deze gegevens uitsluitend om op je vraag te reageren en, als je dat wilt, een kennismaking te plannen.
-            De grondslag hiervoor is je verzoek om contact (gerechtvaardigd belang). Ik verkoop je gegevens niet en deel ze
-            niet met derden, behalve mijn e-mail- en hostingprovider die nodig zijn om berichten te ontvangen.
+            De grondslag hiervoor is mijn gerechtvaardigd belang om op vragen te reageren, of het nemen van stappen op jouw
+            verzoek voordat we eventueel een overeenkomst sluiten. Ik verkoop je gegevens niet en deel ze niet met derden,
+            behalve mijn e-mail- en hostingprovider die nodig zijn om berichten te ontvangen.
         </p>
 
         <h2>Hoe lang bewaar ik ze?</h2>
@@ -51,22 +52,30 @@ require __DIR__ . '/includes/header.php';
             Om te zien hoe de site gebruikt wordt, houd ik op mijn eigen server eenvoudige statistieken bij:
             welke pagina bezocht wordt, van welke website je kwam (alleen de domeinnaam), en welk type apparaat en
             browser je gebruikt. Je volledige IP-adres wordt daarbij niet opgeslagen. Om bezoekers per dag te kunnen
-            tellen, wordt een pseudonieme code gemaakt uit een ingekort IP-adres en je browsertype. Die code verandert
-            elke dag en de sleutel om hem te maken wordt dagelijks gewist, zodat bezoeken niet over meerdere dagen aan
-            elkaar te koppelen zijn. Deze statistieken worden na ongeveer 13 maanden verwijderd en niet met anderen gedeeld.
+            tellen, wordt een pseudonieme code gemaakt uit een ingekort IP-adres en de browsergegevens die je browser
+            meestuurt (de zogeheten user-agent). Die code verandert elke dag: de sleutel om hem te maken wordt bij het
+            eerste bezoek van een nieuwe dag gewist, zodat bezoeken niet over meerdere dagen aan elkaar te koppelen zijn.
+            De statistieken worden na ongeveer 13 maanden automatisch verwijderd en niet met anderen gedeeld.
         </p>
         <p>
-            Om misbruik te voorkomen (zoals spam via het contactformulier of de MCP-koppeling) wordt op dezelfde
-            pseudonieme manier bijgehouden hoe vaak er vanaf een netwerk berichten worden verstuurd. Die gegevens worden
-            na 24 uur verwijderd.
+            Om misbruik te voorkomen, zoals spam via het contactformulier of de MCP-koppeling en het raden van het
+            wachtwoord van de statistiekenpagina, wordt op dezelfde pseudonieme manier bijgehouden hoe vaak er vanaf een
+            netwerk berichten worden verstuurd of inlogpogingen worden gedaan. Die gegevens worden na 24 uur niet meer
+            gebruikt en bij de eerstvolgende opschoning verwijderd.
+        </p>
+        <p>
+            De grondslag voor de statistieken en de bescherming tegen misbruik is mijn gerechtvaardigd belang: weten hoe
+            de site gebruikt wordt en de site en mijn inbox beschermen. Door het inkorten van IP-adressen en het dagelijks
+            wisselen van de code houd ik de inbreuk op je privacy zo klein mogelijk.
         </p>
         <p>
             Mijn hostingprovider houdt, zoals gebruikelijk, technische serverlogs bij (waaronder IP-adressen) voor de
             beveiliging en het goed laten werken van de server. Daar heb ik zelf geen invloed op.
         </p>
         <p>
-            Alleen de beveiligde statistiekenpagina voor mijzelf gebruikt functionele cookies om ingelogd te blijven;
-            die worden bij gewone bezoekers niet geplaatst.
+            Alleen als ik zelf inlog op de beveiligde statistiekenpagina worden er cookies geplaatst: een sessiecookie om
+            ingelogd te blijven en een cookie zodat mijn eigen bezoeken niet in de statistieken meetellen. Bij gewone
+            bezoekers worden deze cookies niet geplaatst.
         </p>
 
         <h2>Je rechten</h2>
