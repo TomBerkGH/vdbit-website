@@ -6,7 +6,8 @@ require __DIR__ . '/includes/config.php';
 
 $pageTitle = 'VDB-IT | AI-specialist voor het MKB en de maakindustrie';
 $pageDescription = 'Tom van den Berk: zelfstandig software developer met bijna 20 jaar ervaring en specialist in AI. '
-    . 'AI-integraties, procesoptimalisatie, maatwerksoftware en MCP-koppelingen voor het MKB.';
+    . 'AI-integraties, procesoptimalisatie, maatwerksoftware, MCP-koppelingen, snel prototypen én in productie met agentic workflows '
+    . 'en begeleiding om zelf met AI aan de slag te gaan.';
 $isHome = true;
 
 $content = require __DIR__ . '/includes/content.php';

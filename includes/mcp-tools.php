@@ -23,7 +23,8 @@ function mcp_tools(array $content): array
             'name'        => 'list_services',
             'title'       => 'Diensten',
             'summary'     => 'De diensten die ik aanbied, met een korte uitleg per dienst.',
-            'description' => 'List the services ' . SITE['name'] . ' offers, such as AI integrations, process optimisation, custom software and MCP integrations.',
+            'description' => 'List the services ' . SITE['name'] . ' offers, such as AI integrations, process optimisation, custom software, MCP integrations, '
+                . 'fast prototyping and fast delivery to production with agentic workflows, and helping people and companies get started with AI themselves.',
             'handler'     => static fn (): array => [
                 'services' => array_map(static fn (array $service): array => array_diff_key($service, ['icon' => true]), $content['services']),
             ],

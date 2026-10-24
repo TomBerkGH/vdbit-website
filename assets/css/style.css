@@ -475,7 +475,7 @@ p {
 /* Diensten */
 .service-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 20px;
 }
 
@@ -505,10 +505,10 @@ p {
 }
 
 /* Elke dienst krijgt een eigen logokleur */
-.service-grid .card:nth-child(1) { --accent: var(--c-red); }
-.service-grid .card:nth-child(2) { --accent: var(--c-orange); }
-.service-grid .card:nth-child(3) { --accent: var(--c-green); }
-.service-grid .card:nth-child(4) { --accent: var(--c-blue); }
+.service-grid .card:nth-child(4n+1) { --accent: var(--c-red); }
+.service-grid .card:nth-child(4n+2) { --accent: var(--c-orange); }
+.service-grid .card:nth-child(4n+3) { --accent: var(--c-green); }
+.service-grid .card:nth-child(4n+4) { --accent: var(--c-blue); }
 
 .card-icon {
     width: 44px;
