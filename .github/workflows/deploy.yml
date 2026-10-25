@@ -58,3 +58,4 @@ jobs:
             data/*.sqlite*
             .env
             README.md
+            CLAUDE.md
