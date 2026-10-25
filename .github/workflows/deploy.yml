@@ -14,12 +14,16 @@ permissions:
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     # Een hangende FTP-verbinding mag de volgende deploys niet urenlang blokkeren.
     timeout-minutes: 10
     steps:
       # Actions vastgezet op een commit, zodat een verplaatste tag geen andere code kan uitvoeren.
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+
+      # Een PHP-bestand met een syntaxfout mag de server niet bereiken.
+      - name: Controleer de PHP-syntax
+        run: git ls-files -z '*.php' | xargs -0 php -l > /dev/null
 
       - name: Wachtwoord voor statistieken klaarzetten
         env:

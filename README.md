@@ -1,7 +1,7 @@
 # vdb-it.nl
 
 Website van VDB-IT. Gewone PHP, geen framework, geen build-stap.
-Vereist PHP 8.1+ met de extensies `pdo_sqlite` en `mbstring` (standaard op vrijwel elke hosting).
+Vereist PHP 8.5+ met de extensies `pdo_sqlite` en `mbstring` (standaard op vrijwel elke hosting).
 
 ## Lokaal draaien
 
@@ -35,7 +35,7 @@ php -S localhost:8000
 
 ## Online zetten
 
-Elke push naar `main` zet de site via FTPS op de hosting (`.github/workflows/deploy.yml`).
+Elke push naar `main` controleert de PHP-syntax en zet de site daarna via FTPS op de hosting (`.github/workflows/deploy.yml`).
 Stel eenmalig deze secrets in onder *Settings → Secrets and variables → Actions*:
 
 | Secret           | Voorbeeld                         |
