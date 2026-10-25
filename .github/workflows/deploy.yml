@@ -38,7 +38,7 @@ jobs:
           echo "SERVER_DIR=${FTP_SERVER_DIR%/}/" >> "$GITHUB_ENV"
 
       - name: Upload via FTP
-        uses: SamKirkland/FTP-Deploy-Action@8e83cea8672e3fbcbb9fdafff34debf6ae4c5f65 # v4.3.5
+        uses: SamKirkland/FTP-Deploy-Action@v4.4.0
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
