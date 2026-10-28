@@ -135,6 +135,31 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // WebMCP: de tools van de MCP-server ook aanbieden aan een AI-agent in de browser.
+    // Experimenteel; oudere Chrome-versies hebben het nog op navigator.modelContext.
+    const modelContext = document.modelContext ?? navigator.modelContext;
+    const webmcpTools = document.getElementById('webmcp-tools');
+
+    if (modelContext?.registerTool && webmcpTools) {
+        const callTool = async (name, args) => {
+            const response = await fetch('/mcp', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+                body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name, arguments: args ?? {} } }),
+            });
+            const { result, error } = await response.json();
+            const text = result?.content?.[0]?.text ?? error?.message ?? 'Onbekende fout';
+            if (!result || result.isError) throw new Error(text);
+            return text;
+        };
+
+        JSON.parse(webmcpTools.textContent).forEach((tool) => {
+            try {
+                Promise.resolve(modelContext.registerTool({ ...tool, execute: (args) => callTool(tool.name, args) })).catch(() => {});
+            } catch (e) {}
+        });
+    }
+
     // Elementen laten infaden zodra ze in beeld komen.
     const revealItems = document.querySelectorAll('.reveal');
 

@@ -73,6 +73,9 @@ Testen:
 claude mcp add --transport http vdb-it https://www.vdb-it.nl/mcp
 ```
 
+Elke pagina biedt dezelfde tools ook aan via WebMCP (`document.modelContext`, experimenteel), voor AI-agents in de
+browser. De pagina stuurt elke aanroep door naar `/mcp`, dus de limieten hierboven gelden ook daar.
+
 ## Statistieken
 
 Bezoeken worden zonder cookies en zonder volledig IP-adres (pseudoniem, per dag) bijgehouden in `data/analytics.sqlite`

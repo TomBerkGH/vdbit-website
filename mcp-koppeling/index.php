@@ -111,6 +111,26 @@ require __DIR__ . '/../includes/header.php';
         </div>
         <p class="muted mcp-note">Andere AI-clients die MCP via HTTP ondersteunen, werken met dezelfde URL.</p>
 
+        <h2 class="mcp-heading">Of zonder koppelen, met WebMCP</h2>
+        <div class="mcp-explain mcp-explain-tight">
+            <div>
+                <p>
+                    Elke pagina van deze site biedt dezelfde tools ook aan via <strong>WebMCP</strong>, een nieuwe webstandaard
+                    waarmee een AI-agent in je browser direct met een website werkt. Je hoeft dan niets in te stellen: de agent
+                    ziet de tools zodra je de site opent, in plaats van knoppen te zoeken en formulieren in te vullen.
+                </p>
+                <p>
+                    WebMCP is nog experimenteel en werkt alleen in browsers die het ondersteunen, zoals recente versies van
+                    Chrome. Werkt het bij jou nog niet, gebruik dan de koppeling hierboven.
+                </p>
+            </div>
+            <ul class="mcp-facts">
+                <li><span>API</span><strong><code>document.modelContext</code></strong></li>
+                <li><span>Instellen</span><strong>Niet nodig</strong></li>
+                <li><span>Tools</span><strong>Dezelfde <?= count($tools) ?></strong></li>
+            </ul>
+        </div>
+
         <h2 class="mcp-heading">AI die ook iets dóét</h2>
         <div class="mcp-explain mcp-explain-tight">
             <div>

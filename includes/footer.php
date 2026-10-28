@@ -26,5 +26,7 @@
         </span>
     </div>
 </footer>
+<?php require_once __DIR__ . '/mcp-tools.php'; ?>
+<script type="application/json" id="webmcp-tools"><?= json_encode(webmcp_tools(), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG) ?></script>
 </body>
 </html>

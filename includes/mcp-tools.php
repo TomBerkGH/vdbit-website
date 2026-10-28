@@ -121,3 +121,19 @@ function mcp_tools(array $content): array
         'name',
     );
 }
+
+/**
+ * Dezelfde tools voor WebMCP: een AI-agent in de browser vindt ze via document.modelContext (assets/js/main.js).
+ * Elke aanroep gaat naar /mcp, zodat de limieten van de MCP-server ook hier gelden.
+ * Een tool die iets doet (bericht sturen) krijgt consequentialHint, zodat de browser om bevestiging kan vragen.
+ */
+function webmcp_tools(): array
+{
+    return array_map(static fn (array $tool): array => [
+        'name'        => $tool['name'],
+        'title'       => $tool['title'],
+        'description' => $tool['description'],
+        'inputSchema' => $tool['inputSchema'],
+        'annotations' => $tool['annotations']['readOnlyHint'] ? ['readOnlyHint' => true] : ['consequentialHint' => true],
+    ], array_values(mcp_tools(require __DIR__ . '/content.php')));
+}
