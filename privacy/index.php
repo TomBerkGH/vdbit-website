@@ -44,9 +44,18 @@ require __DIR__ . '/../includes/header.php';
 
         <h2>Cookies en statistieken</h2>
         <p>
-            Deze website plaatst geen cookies bij bezoekers en gebruikt geen externe analytics- of trackingdiensten.
+            Deze website plaatst zelf geen cookies bij bezoekers en gebruikt geen externe analytics- of trackingdiensten.
             Lettertypes worden vanaf deze server geladen, niet via externe diensten. Je keuze voor het lichte of donkere
             thema wordt alleen lokaal in je browser opgeslagen.
+        </p>
+        <p>
+            Eén uitzondering: om spam via het contactformulier tegen te houden, gebruik ik Google reCAPTCHA. Die wordt pas
+            geladen als je het formulier begint in te vullen; wie het formulier niet gebruikt, merkt er niets van.
+            reCAPTCHA schat aan de hand van onder meer je IP-adres, je browsergegevens en hoe je de pagina gebruikt in of
+            je een mens bent. Google kan daarbij cookies plaatsen en verwerkt die gegevens mogelijk buiten de Europese Unie.
+            De inhoud van je bericht gaat niet naar Google. De grondslag is mijn gerechtvaardigd belang om mijn inbox tegen
+            spam te beschermen. Lees meer in het
+            <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">privacybeleid van Google</a>.
         </p>
         <p>
             Om te zien hoe de site gebruikt wordt, houd ik op mijn eigen server eenvoudige statistieken bij:

@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 require __DIR__ . '/includes/config.php';
+require __DIR__ . '/includes/recaptcha.php';
 
 $pageTitle = 'VDB-IT | AI-specialist voor het MKB en de maakindustrie';
 $pageDescription = 'Tom van den Berk: AI-specialist met bijna 20 jaar ervaring in software. '
@@ -168,7 +169,7 @@ require __DIR__ . '/includes/header.php';
             </ul>
         </div>
 
-        <form class="contact-form card reveal" action="/contact/" method="post">
+        <form class="contact-form card reveal" action="/contact/" method="post"<?php if (recaptcha_enabled()): ?> data-recaptcha="<?= e(SITE['recaptcha_site_key']) ?>"<?php endif ?>>
             <?php if ($contactStatus === 'ok'): ?>
                 <p id="formulier-melding" class="form-message form-success" role="status" tabindex="-1">Bedankt voor je bericht! Ik neem snel contact met je op.</p>
             <?php elseif ($contactStatus === 'limiet'): ?>
@@ -197,6 +198,14 @@ require __DIR__ . '/includes/header.php';
             <label class="hp" aria-hidden="true">Website<input type="text" name="website" tabindex="-1" autocomplete="off"></label>
 
             <p class="form-note">Je gegevens gebruik ik alleen om op je bericht te reageren. Zie de <a href="/privacy/">privacyverklaring</a>.</p>
+            <?php if (recaptcha_enabled()): ?>
+                <input type="hidden" name="g-recaptcha-response" value="">
+                <!-- Google eist deze tekst als het reCAPTCHA-logo verborgen is (zie style.css). -->
+                <p class="form-note">
+                    Beveiligd met reCAPTCHA. Het <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">privacybeleid</a>
+                    en de <a href="https://policies.google.com/terms" target="_blank" rel="noopener">voorwaarden</a> van Google zijn van toepassing.
+                </p>
+            <?php endif ?>
             <button class="btn" type="submit">Verstuur bericht <span aria-hidden="true">&rarr;</span></button>
         </form>
     </div>

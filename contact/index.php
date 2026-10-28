@@ -7,6 +7,7 @@ ini_set('display_errors', '0');
 
 require __DIR__ . '/../includes/config.php';
 require __DIR__ . '/../includes/mailer.php';
+require __DIR__ . '/../includes/recaptcha.php';
 
 function redirectToContact(string $status): never
 {
@@ -24,6 +25,10 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 $honeypot = $_POST['website'] ?? '';
 if (!is_string($honeypot) || trim($honeypot) !== '') {
     redirectToContact('ok');
+}
+
+if (recaptcha_enabled() && !recaptcha_passes($_POST['g-recaptcha-response'] ?? '')) {
+    redirectToContact('fout');
 }
 
 $message = contact_message_from([

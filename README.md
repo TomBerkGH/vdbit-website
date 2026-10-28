@@ -20,6 +20,7 @@ php -S localhost:8000
 | `index.php`             | Homepage; diensten en werkwijze staan als lijstjes bovenin |
 | `privacy/index.php`     | Privacyverklaring op `/privacy/`                           |
 | `contact/index.php`     | Verwerkt het contactformulier en mailt het bericht         |
+| `includes/recaptcha.php`| reCAPTCHA-controle voor het contactformulier               |
 | `includes/mailer.php`   | Controleert en mailt contactberichten (formulier én MCP)   |
 | `includes/config.php`   | Contactgegevens, KvK-nummer en afzenderadres               |
 | `includes/header.php`   | `<head>`, logo en menu                                     |
@@ -85,5 +86,17 @@ php -r "echo password_hash('jouw-wachtwoord', PASSWORD_DEFAULT);"
 
 - **Online:** zet de uitkomst als secret `STATS_PASSWORD_HASH`; de deploy maakt er `includes/secrets.php` van.
 - **Lokaal:** maak `includes/secrets.php` aan met `<?php return ['stats_password_hash' => '<de hash>'];`
+
+## reCAPTCHA
+
+Het contactformulier is beveiligd met onzichtbare Google reCAPTCHA (score, `includes/recaptcha.php`), net als
+simons-website. Het script van Google laadt pas als iemand het formulier gaat invullen; de privacyverklaring vermeldt dat.
+
+- De openbare site key staat in `includes/config.php`.
+- De geheime sleutel vind je in de Google Cloud-console bij de sleutel onder
+  *Integreren met een externe service of plug-in* (de "legacy secret key"). Zet die als secret
+  `RECAPTCHA_SECRET_KEY`; de deploy zet hem in `includes/secrets.php`.
+- Zonder geheime sleutel staat reCAPTCHA uit (handig lokaal). Wil je het lokaal testen, voeg dan
+  `'recaptcha_secret_key'` toe aan `includes/secrets.php` en `localhost` aan de domeinen van de sleutel.
 
 Na inloggen krijgt je browser een cookie waardoor je eigen bezoeken niet meetellen.

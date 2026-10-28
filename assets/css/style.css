@@ -1036,6 +1036,11 @@ html:not(.js) .nav-toggle {
     border: 1px solid color-mix(in srgb, var(--c-red) 40%, transparent);
 }
 
+/* Het zwevende reCAPTCHA-logo verbergen; de tekst onder het formulier vervangt het, zoals Google toestaat. */
+.grecaptcha-badge {
+    visibility: hidden;
+}
+
 .hp {
     position: absolute;
     left: -9999px;

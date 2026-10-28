@@ -25,10 +25,14 @@ jobs:
       - name: Controleer de PHP-syntax
         run: git ls-files -z '*.php' | xargs -0 php -l > /dev/null
 
-      - name: Wachtwoord voor statistieken klaarzetten
+      # Zonder geheime reCAPTCHA-sleutel staat de controle op het contactformulier uit.
+      - name: Wachtwoord voor statistieken en reCAPTCHA-sleutel klaarzetten
         env:
           STATS_PASSWORD_HASH: ${{ secrets.STATS_PASSWORD_HASH }}
-        run: printf "<?php\n\nreturn ['stats_password_hash' => '%s'];\n" "$STATS_PASSWORD_HASH" > includes/secrets.php
+          RECAPTCHA_SECRET_KEY: ${{ secrets.RECAPTCHA_SECRET_KEY }}
+        run: >-
+          printf "<?php\n\nreturn [\n    'stats_password_hash' => '%s',\n    'recaptcha_secret_key' => '%s',\n];\n"
+          "$STATS_PASSWORD_HASH" "$RECAPTCHA_SECRET_KEY" > includes/secrets.php
 
       # De FTP-action eist een map met een slash op het eind; die voegen we zelf toe.
       - name: Doelmap bepalen

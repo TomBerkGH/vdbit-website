@@ -19,15 +19,15 @@ Test the MCP server locally (works on `/mcp` and `/mcp/` with the built-in serve
 curl -s -X POST -H 'Content-Type: application/json' -d '{"jsonrpc":"2.0","id":1,"method":"tools/list"}' http://localhost:8000/mcp
 ```
 
-`.htaccess` (the `/mcp` rewrite, security and cache headers, blocking dotfiles and `*.sqlite`) only applies on the live server; Herd (nginx) and `php -S` ignore it. `/stats` needs `includes/secrets.php` locally: `<?php return ['stats_password_hash' => '<password_hash() output>'];`.
+`.htaccess` (the `/mcp` rewrite, security and cache headers, blocking dotfiles and `*.sqlite`) only applies on the live server; Herd (nginx) and `php -S` ignore it. `/stats` needs `includes/secrets.php` locally: `<?php return ['stats_password_hash' => '<password_hash() output>'];`. Without `recaptcha_secret_key` in that file, reCAPTCHA is off.
 
 ## Deployment
 
-Every push to `main` deploys straight to production via `.github/workflows/deploy.yml`: syntax check, write `includes/secrets.php` from the `STATS_PASSWORD_HASH` secret, then FTPS-upload the tracked files with `SamKirkland/FTP-Deploy-Action`. Files that are not in git (`data/analytics.sqlite`) are never touched on the server, and anything not excluded in the workflow ends up publicly reachable. This workflow is kept identical to the ones in the simons-website and flex-website repos; change them together.
+Every push to `main` deploys straight to production via `.github/workflows/deploy.yml`: syntax check, write `includes/secrets.php` from the `STATS_PASSWORD_HASH` and `RECAPTCHA_SECRET_KEY` secrets, then FTPS-upload the tracked files with `SamKirkland/FTP-Deploy-Action`. Files that are not in git (`data/analytics.sqlite`) are never touched on the server, and anything not excluded in the workflow ends up publicly reachable. This workflow is kept identical to the ones in the simons-website and flex-website repos; change them together.
 
 ## Architecture
 
-Every entry point (`index.php`, `contact/index.php`, `privacy/index.php`, `mcp-koppeling/index.php`, `mcp/index.php`, `stats/index.php`) first requires `includes/config.php`. That file defines the `SITE` constant (contact details, mail sender), returns a 404 for any `PATH_INFO`, loads `includes/analytics.php` and provides the helpers `e()` (HTML escaping), `asset()` and `stats_password_hash()`. Link CSS/JS through `asset()`: it appends `?v=<filemtime>`, and `.htaccess` caches those files as immutable for a year.
+Every entry point (`index.php`, `contact/index.php`, `privacy/index.php`, `mcp-koppeling/index.php`, `mcp/index.php`, `stats/index.php`) first requires `includes/config.php`. That file defines the `SITE` constant (contact details, mail sender), returns a 404 for any `PATH_INFO`, loads `includes/analytics.php` and provides the helpers `e()` (HTML escaping), `asset()`, `secret()` (a value from `includes/secrets.php`) and `stats_password_hash()`. Link CSS/JS through `asset()`: it appends `?v=<filemtime>`, and `.htaccess` caches those files as immutable for a year.
 
 No public URL ends in `.php`: every page except the homepage lives in its own folder as `index.php` and is linked with an absolute path and a trailing slash (`/privacy/`). Pages set `$pageTitle` and `$pageDescription` (optionally `$isHome`, `$noIndex`, `$trackPageview`), then include `includes/header.php` and `includes/footer.php`. The header records the pageview. Menu links are anchors on the homepage.
 
@@ -38,6 +38,8 @@ Shared sources, so the site and the MCP server never drift apart:
 - `includes/mailer.php` validates and sanitises contact messages (`contact_message_from()`, which also strips newlines to prevent header injection) and sends them (`send_contact_mail()`, always to `SITE['email']`). The contact form and the `send_contact_request` MCP tool both use it. The `MAIL_*` rate limits are defined here.
 
 `mcp/index.php` is a stateless Streamable HTTP JSON-RPC endpoint: no sessions, POST only, JSON only, batches of at most 10 messages, 100 KB body limit. PHP warnings are suppressed so they never corrupt the JSON response.
+
+`includes/recaptcha.php` protects the contact form with invisible score-based reCAPTCHA (action `contact`, score at least 0.5), checked in `contact/index.php` after the honeypot via `siteverify` with the key's legacy secret key from `includes/secrets.php`, the same as simons-website. The public site key is in `SITE`. It is off when the secret key is missing. `assets/js/main.js` loads Google's script only on the first focus in the form and fetches the token on submit; if that fails it submits anyway and the server rejects it. `privacy/index.php` describes exactly this, so keep the two in sync. The MCP tool has its own limits and no reCAPTCHA.
 
 `includes/analytics.php` holds the cookieless statistics and the rate limiter, both in SQLite (`data/analytics.sqlite`, schema created on first use):
 

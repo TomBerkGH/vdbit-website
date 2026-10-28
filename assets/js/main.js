@@ -89,6 +89,45 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         } catch (e) {}
 
+        // reCAPTCHA: het script van Google pas laden als iemand het formulier gaat invullen (zie de privacyverklaring).
+        const siteKey = form.dataset.recaptcha;
+
+        if (siteKey) {
+            const button = form.querySelector('button[type="submit"]');
+            let recaptcha = null;
+            let submitting = false;
+
+            const loadRecaptcha = () => recaptcha ??= new Promise((resolve, reject) => {
+                const script = document.createElement('script');
+                script.src = 'https://www.google.com/recaptcha/api.js?render=' + encodeURIComponent(siteKey);
+                script.onload = () => grecaptcha.ready(resolve);
+                script.onerror = reject;
+                document.head.append(script);
+            });
+
+            form.addEventListener('focusin', () => loadRecaptcha().catch(() => {}), { once: true });
+
+            form.addEventListener('submit', (event) => {
+                event.preventDefault();
+                if (submitting) return;
+                submitting = true;
+                button.disabled = true;
+
+                // Lukt het niet (geblokkeerd of te traag), dan toch versturen: de server weigert dan en toont de foutmelding met het mailadres.
+                const timeout = new Promise((resolve, reject) => setTimeout(reject, 10000));
+                Promise.race([loadRecaptcha().then(() => grecaptcha.execute(siteKey, { action: 'contact' })), timeout])
+                    .then((token) => { form.elements['g-recaptcha-response'].value = token; })
+                    .catch(() => {})
+                    .finally(() => form.submit());
+            });
+
+            // Terug naar deze pagina via de terugknop: de knop weer bruikbaar maken.
+            window.addEventListener('pageshow', () => {
+                submitting = false;
+                button.disabled = false;
+            });
+        }
+
         // Pas focussen als de browser klaar is met naar het anker springen, anders gaat de focus verloren.
         const message = form.querySelector('.form-message');
         if (message) {
