@@ -167,6 +167,10 @@ require __DIR__ . '/includes/header.php';
                 <li><span>Bel</span><a href="tel:<?= e(SITE['phone_href']) ?>"><?= e(SITE['phone']) ?></a></li>
                 <li><span>Mail</span><a href="mailto:<?= e(SITE['email']) ?>"><?= e(SITE['email']) ?></a></li>
             </ul>
+            <div class="contact-mcp card reveal">
+                <p><strong>Liever via AI?</strong> Je AI-assistent kan je bericht ook voor je sturen, via de MCP-server van deze site.</p>
+                <a class="btn btn-small" href="/mcp-koppeling/">Naar de MCP-koppeling <span aria-hidden="true">&rarr;</span></a>
+            </div>
         </div>
 
         <form class="contact-form card reveal" action="/contact/" method="post"<?php if (recaptcha_enabled()): ?> data-recaptcha="<?= e(SITE['recaptcha_site_key']) ?>"<?php endif ?>>
