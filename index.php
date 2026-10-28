@@ -116,7 +116,7 @@ require __DIR__ . '/includes/header.php';
                 </p>
                 <p class="mcp-demo-hint">
                     In Claude: <em>Instellingen &rarr; Connectors &rarr; Aangepaste connector toevoegen</em> en plak de URL.
-                    <a href="mcp-koppeling.php">Uitleg voor andere AI-clients &rarr;</a>
+                    <a href="/mcp-koppeling/">Uitleg voor andere AI-clients &rarr;</a>
                 </p>
                 <a class="btn-github" href="<?= e(SITE['github']) ?>" target="_blank" rel="noopener">
                     <?= github_icon() ?>
@@ -168,7 +168,7 @@ require __DIR__ . '/includes/header.php';
             </ul>
         </div>
 
-        <form class="contact-form card reveal" action="contact.php" method="post">
+        <form class="contact-form card reveal" action="/contact/" method="post">
             <?php if ($contactStatus === 'ok'): ?>
                 <p id="formulier-melding" class="form-message form-success" role="status" tabindex="-1">Bedankt voor je bericht! Ik neem snel contact met je op.</p>
             <?php elseif ($contactStatus === 'limiet'): ?>
@@ -196,7 +196,7 @@ require __DIR__ . '/includes/header.php';
             <!-- Honeypot tegen spambots: echte bezoekers zien dit veld niet. -->
             <label class="hp" aria-hidden="true">Website<input type="text" name="website" tabindex="-1" autocomplete="off"></label>
 
-            <p class="form-note">Je gegevens gebruik ik alleen om op je bericht te reageren. Zie de <a href="privacy.php">privacyverklaring</a>.</p>
+            <p class="form-note">Je gegevens gebruik ik alleen om op je bericht te reageren. Zie de <a href="/privacy/">privacyverklaring</a>.</p>
             <button class="btn" type="submit">Verstuur bericht <span aria-hidden="true">&rarr;</span></button>
         </form>
     </div>

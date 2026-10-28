@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 /**
  * Contactberichten opschonen, controleren en mailen.
- * Gebruikt door het contactformulier (contact.php) en de MCP-tool send_contact_request.
+ * Gebruikt door het contactformulier (contact/index.php) en de MCP-tool send_contact_request.
  */
 
 // Limieten tegen spam, per netwerk (zie rate_limit_allows()). Het formulier heeft bewust geen totale

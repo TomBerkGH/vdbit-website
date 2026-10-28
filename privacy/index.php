@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-require __DIR__ . '/includes/config.php';
+require __DIR__ . '/../includes/config.php';
 
 $pageTitle = 'Privacyverklaring | VDB-IT';
 $pageDescription = 'Hoe VDB-IT omgaat met persoonsgegevens die je via deze website deelt.';
 
-require __DIR__ . '/includes/header.php';
+require __DIR__ . '/../includes/header.php';
 ?>
 
 <section class="section page">
@@ -86,8 +86,8 @@ require __DIR__ . '/includes/header.php';
             <a href="https://autoriteitpersoonsgegevens.nl" target="_blank" rel="noopener">Autoriteit Persoonsgegevens</a>.
         </p>
 
-        <p><a href="./">&larr; Terug naar de homepage</a></p>
+        <p><a href="/">&larr; Terug naar de homepage</a></p>
     </div>
 </section>
 
-<?php require __DIR__ . '/includes/footer.php'; ?>
+<?php require __DIR__ . '/../includes/footer.php'; ?>

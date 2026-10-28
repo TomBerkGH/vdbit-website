@@ -36,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header('Allow: POST, OPTIONS');
     respond(405, [
-        'error' => 'Dit is een MCP-endpoint. Koppel het aan een AI-assistent, zie ' . SITE['url'] . '/mcp-koppeling.php',
+        'error' => 'Dit is een MCP-endpoint. Koppel het aan een AI-assistent, zie ' . SITE['url'] . '/mcp-koppeling/',
     ]);
 }
 

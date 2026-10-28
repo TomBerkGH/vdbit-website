@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-require __DIR__ . '/includes/config.php';
-require __DIR__ . '/includes/mailer.php';
-require __DIR__ . '/includes/mcp-tools.php';
+require __DIR__ . '/../includes/config.php';
+require __DIR__ . '/../includes/mailer.php';
+require __DIR__ . '/../includes/mcp-tools.php';
 
 $pageTitle = 'MCP-koppeling | VDB-IT';
 $pageDescription = 'Koppel je AI-assistent aan de MCP-server van vdb-it.nl en vraag zelf naar ervaring, diensten en projecten.';
 
-$content = require __DIR__ . '/includes/content.php';
+$content = require __DIR__ . '/../includes/content.php';
 $tools = mcp_tools($content);
 $mcpUrl = SITE['url'] . '/mcp';
 
@@ -31,7 +31,7 @@ BASH;
 $vscodeConfig = json_encode(['servers' => ['vdb-it' => ['type' => 'http', 'url' => $mcpUrl]]], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
 $cursorConfig = json_encode(['mcpServers' => ['vdb-it' => ['url' => $mcpUrl]]], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
 
-require __DIR__ . '/includes/header.php';
+require __DIR__ . '/../includes/header.php';
 ?>
 
 <section class="section page mcp-page">
@@ -179,9 +179,9 @@ require __DIR__ . '/includes/header.php';
                 <h2>Dit ook voor jouw systemen?</h2>
                 <p class="muted">Ik bouw MCP-koppelingen op ERP, MES, traceability en maatwerksoftware, zodat je team AI kan laten werken met de eigen bedrijfsdata.</p>
             </div>
-            <a class="btn" href="./#contact">Plan een kennismaking <span aria-hidden="true">&rarr;</span></a>
+            <a class="btn" href="/#contact">Plan een kennismaking <span aria-hidden="true">&rarr;</span></a>
         </div>
     </div>
 </section>
 
-<?php require __DIR__ . '/includes/footer.php'; ?>
+<?php require __DIR__ . '/../includes/footer.php'; ?>

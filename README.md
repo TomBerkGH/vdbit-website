@@ -18,8 +18,8 @@ php -S localhost:8000
 | Bestand                 | Wat                                                        |
 |-------------------------|------------------------------------------------------------|
 | `index.php`             | Homepage; diensten en werkwijze staan als lijstjes bovenin |
-| `privacy.php`           | Privacyverklaring                                          |
-| `contact.php`           | Verwerkt het contactformulier en mailt het bericht         |
+| `privacy/index.php`     | Privacyverklaring op `/privacy/`                           |
+| `contact/index.php`     | Verwerkt het contactformulier en mailt het bericht         |
 | `includes/mailer.php`   | Controleert en mailt contactberichten (formulier én MCP)   |
 | `includes/config.php`   | Contactgegevens, KvK-nummer en afzenderadres               |
 | `includes/header.php`   | `<head>`, logo en menu                                     |
@@ -29,7 +29,7 @@ php -S localhost:8000
 | `includes/content.php`  | Profiel, diensten, werkwijze en cases (site én MCP)        |
 | `mcp/index.php`         | MCP-server op `/mcp` (lezen en bericht sturen)             |
 | `includes/mcp-tools.php`| De tools van de MCP-server (server én uitlegpagina)        |
-| `mcp-koppeling.php`     | Uitlegpagina: hoe koppel je een AI-client aan de MCP       |
+| `mcp-koppeling/index.php` | Uitlegpagina op `/mcp-koppeling/`: AI-client koppelen    |
 | `assets/css/style.css`  | Alle styling; kleuren per thema bovenin                    |
 | `assets/js/main.js`     | Thema-knop, mobiel menu, animaties                         |
 

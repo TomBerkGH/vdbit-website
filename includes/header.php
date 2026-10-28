@@ -10,7 +10,7 @@ if ($trackPageview ?? true) {
 }
 
 $base = $isHome ? '' : '/';
-$canonical = SITE['url'] . ($isHome ? '/' : (parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/'));
+$canonical = SITE['url'] . ($isHome ? '/' : preg_replace('#/index\.php$#', '/', parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/'));
 ?>
 <!DOCTYPE html>
 <html lang="nl">
@@ -71,7 +71,7 @@ $canonical = SITE['url'] . ($isHome ? '/' : (parse_url($_SERVER['REQUEST_URI'] ?
             <a href="<?= $base ?>#werkwijze">Werkwijze</a>
             <a href="<?= $base ?>#cases">Cases</a>
             <a href="<?= $base ?>#over-mij">Over mij</a>
-            <a href="/mcp-koppeling.php">MCP-demo</a>
+            <a href="/mcp-koppeling/">MCP-demo</a>
             <a class="btn btn-small" href="<?= $base ?>#contact">Contact</a>
         </nav>
 

@@ -7,12 +7,12 @@ final class McpToolError extends RuntimeException
 {
 }
 
-/** Protocolversies die de server ondersteunt, nieuwste eerst. Ook getoond op mcp-koppeling.php. */
+/** Protocolversies die de server ondersteunt, nieuwste eerst. Ook getoond op /mcp-koppeling/. */
 const MCP_PROTOCOL_VERSIONS = ['2025-11-25', '2025-06-18', '2025-03-26', '2024-11-05'];
 
 /**
  * De tools van de MCP-server. Gebruikt door mcp/index.php (de server zelf)
- * en mcp-koppeling.php (de uitlegpagina), zodat die altijd overeenkomen.
+ * en mcp-koppeling/index.php (de uitlegpagina), zodat die altijd overeenkomen.
  * Elke handler krijgt de arguments van de aanroep mee.
  */
 function mcp_tools(array $content): array

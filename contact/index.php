@@ -5,18 +5,18 @@ declare(strict_types=1);
 // Waarschuwingen (bijv. van mail()) mogen de redirect-headers niet breken; ze gaan naar het errorlog.
 ini_set('display_errors', '0');
 
-require __DIR__ . '/includes/config.php';
-require __DIR__ . '/includes/mailer.php';
+require __DIR__ . '/../includes/config.php';
+require __DIR__ . '/../includes/mailer.php';
 
 function redirectToContact(string $status): never
 {
     // Het anker wijst naar de melding zelf (die focus kan krijgen), niet naar de sectie.
-    header('Location: ./?contact=' . $status . '#formulier-melding', true, 303);
+    header('Location: /?contact=' . $status . '#formulier-melding', true, 303);
     exit;
 }
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header('Location: ./#contact', true, 303);
+    header('Location: /#contact', true, 303);
     exit;
 }
 
