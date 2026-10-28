@@ -650,6 +650,55 @@ html:not(.js) .nav-toggle {
     border: 1px solid rgba(61, 220, 151, .25);
 }
 
+/* "Live"-bord zoals boven de deur van een radiostudio. Eigen donkere achtergrond, dus in beide thema's gelijk. */
+.on-air {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+    padding: 6px 14px;
+    border: 2px solid #ff4d55;
+    border-radius: 6px;
+    background: #12070a;
+    font-family: var(--font-mono);
+    font-size: .85rem;
+    font-weight: 700;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: #ff4d55;
+    text-shadow: 0 0 8px rgba(255, 77, 85, .7);
+    box-shadow: 0 0 18px rgba(255, 77, 85, .35), inset 0 0 12px rgba(255, 77, 85, .15);
+    animation: on-air-glow 2.4s ease-in-out infinite;
+}
+
+.on-air::before {
+    content: "";
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #ff4d55;
+    animation: on-air-pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes on-air-glow {
+    50% { box-shadow: 0 0 28px rgba(255, 77, 85, .55), inset 0 0 16px rgba(255, 77, 85, .25); }
+}
+
+@keyframes on-air-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(255, 77, 85, .7); }
+    50% { box-shadow: 0 0 0 6px rgba(255, 77, 85, 0); opacity: .55; }
+}
+
+.mcp-intro .on-air {
+    display: flex;
+    width: fit-content;
+    margin: 2rem 0 0;
+}
+
+.mcp-intro .on-air + .code-block {
+    margin-top: 12px;
+}
+
 .case h3 {
     font-size: 1.5rem;
 }
@@ -725,11 +774,6 @@ html:not(.js) .nav-toggle {
     z-index: -1;
     border-radius: var(--radius);
     background: var(--tech-bg);
-}
-
-.mcp-demo .status {
-    display: inline-block;
-    margin-bottom: 14px;
 }
 
 .mcp-demo h3 {
@@ -1554,7 +1598,8 @@ html:not(.js) .nav-toggle {
     .section-tech .label,
     .case-link,
     .code-label,
-    .status {
+    .status,
+    .on-air {
         color: #000;
         background: none;
     }

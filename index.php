@@ -108,7 +108,7 @@ require __DIR__ . '/includes/header.php';
 
         <div class="mcp-demo reveal" id="mcp">
             <div class="mcp-demo-text">
-                <span class="status">Live demo</span>
+                <span class="on-air">Live</span>
                 <h3>Deze website heeft zelf een MCP-server</h3>
                 <p>
                     Koppel je AI-assistent aan deze site en vraag zelf naar mijn ervaring, diensten en projecten,

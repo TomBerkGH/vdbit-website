@@ -44,6 +44,7 @@ require __DIR__ . '/../includes/header.php';
                 ervaring, diensten en projecten, of laat de AI direct een bericht naar me sturen. Het is een kleine demo
                 van wat ik bij klanten bouw: AI die rechtstreeks met je eigen systemen en data werkt.
             </p>
+            <span class="on-air">Live</span>
             <div class="code-block code-block-solid">
                 <span class="code-label">MCP-endpoint</span>
                 <code><?= e($mcpUrl) ?></code>
